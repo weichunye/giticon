@@ -1,0 +1,338 @@
+<template>
+    <div>
+        <MainSidebar></MainSidebar>
+        <ProjsetsSidebar></ProjsetsSidebar>
+
+        <div class="positories">
+
+            <el-row>
+                <el-col :span="10">
+                    <div class="top" v-if="this.$route.query.projectType!='all'">
+                       <!-- <img src="../../assets/photo.jpg"/>-->
+                        <!--<p>创建者  &nbsp  /</p>-->
+                        <h3>{{projectName}}</h3>
+                    </div>
+                </el-col>
+                <el-col :span="4">
+                <!--    <el-select size="medium" v-model="projectId" placeholder="请选择" @change="">
+                        <el-option
+                                v-for="item in projectOptions"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>-->
+                </el-col>
+
+            </el-row>
+            <el-row style="margin-top: 20px">
+                <el-col :span="5">
+                    <el-input v-model="depotValue" size="medium" placeholder="输入仓库名称"></el-input>
+                </el-col>
+                <el-col :span="1"> &nbsp</el-col>
+                <el-col :span="4">
+                    <el-button type="primary" size="medium" @click="getDataList(projectValue)">查询</el-button>
+                </el-col>
+            </el-row>
+          <!--  <el-row style="margin: 30px 0 10px">
+                <el-col :span="2">
+                    <el-button size="medium">全部</el-button>
+                </el-col>
+                <el-col :span="2">
+                    <el-button size="medium">公有</el-button>
+                </el-col>
+                <el-col :span="2">
+                    <el-button size="medium">私有</el-button>
+                </el-col>
+                <el-col :span="4">
+                    <el-select size="medium" v-model="languageVal" placeholder="请选择语言">
+                        <el-option
+                                v-for="item in languageOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-col>
+                <el-col :span="2"></el-col>
+                <el-col :span="2"></el-col>
+            </el-row>-->
+
+
+            <!--项目-->
+            <div class="box">
+                <el-table class="projectData"
+                          :data="projectData"
+                          style="width: 100%">
+                    <el-table-column
+                            prop="fragmentName"
+                            label="仓库名称"
+                            width="230">
+                        <template slot-scope="scope">
+                            <span class="iconcode"  @click="goToDetail(scope.row)">{{scope.row.name.slice(0,1)}}</span>
+                            <p>{{scope.row.name}}</p>
+                        </template>
+
+                    </el-table-column>
+                    <el-table-column
+                            prop="description"
+                            label="描述">
+                    </el-table-column>
+                    <el-table-column
+                            prop="createTime"
+                            label="创建时间">
+                        <template slot-scope="scope">
+                            {{scope.row.createTime.substring(0,10)}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="name"
+                            label="上次更新">
+                        <template slot-scope="scope">
+                            {{scope.row.lastUpdateTime}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="60" prop="">
+                        <template slot-scope="scope">
+                            <span class="iconlock"></span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div style="margin-top: 30px; text-align: center">
+                    <el-pagination @size-change="pageSizeChangeHandle" @current-change="pageCurrentChangeHandle"
+                                   :current-page="page"
+                                   background :page-size="limit" layout="total, prev, pager, next, jumper" :total="total">
+                    </el-pagination>
+                </div>
+
+            </div>
+            <!--//项目-->
+
+        </div>
+    </div>
+</template>
+
+<script>
+    // @ is an alias to /src
+    import ProjsetsSidebar from '../projects-sidebar.vue';
+    import MainSidebar from '../main-sidebar.vue';
+
+    export default {
+        name: 'projectrepositories',
+        components: {
+            ProjsetsSidebar,
+            MainSidebar
+        },
+
+        data() {
+            return {
+                projectName:'',
+                depotValue: '',
+                projectId: '',
+                page: 1,
+                limit:5,
+                total: 0,
+                projectOptions: [ ],
+                projectData: []
+            }
+        },
+        mounted() {
+          this.projectName=localStorage.getItem('projectName')
+
+            this.getProjectList()
+            if(this.$route.query.projectType=="all"){
+                this.getAllDeopr()
+
+            }else{
+                this.getDataList()
+            }
+
+            this.$store.commit('getProjectId', this.$route.query.id)
+        },
+        watch: {
+            '$route'(to, from) {
+                //监控路由，更新tab
+                if(this.$route.query.id){
+                    this.getDataList()
+                }else{
+                    this.getAllDeopr()
+                }}
+        },
+        methods: {
+            searchSubmit() {
+                console.log('11')
+
+            },
+            getAllDeopr(){
+                var _this = this;
+                /*this.$route.query.id;*/
+                var params = new URLSearchParams();
+                params.append("page", _this.page);
+                params.append("limit", _this.limit);
+                params.append("depotName", _this.depotValue);
+                params.append("accessLevel", "");
+                this.axios.post(this.config.baseURL + '/app/depot/myDepotListPage ', params)
+                    .then(function (response) {
+                        console.log(" response", response.data)
+                        _this.projectData = response.data.pageList.records
+                        _this.total= response.data.pageList.total
+                    })
+            },
+            //获取数据
+            getDataList(val) {
+                var _this = this;
+                /*this.$route.query.id;*/
+                var params = new URLSearchParams();
+                params.append("page", _this.page);
+                params.append("limit", _this.limit);
+                params.append("projectId", localStorage.getItem('projectId'));
+                params.append("depotName", _this.depotValue);
+                params.append("accessLevel", "");
+                this.axios.post(this.config.baseURL + '/app/getProjectDepotList ', params)
+                    .then(function (response) {
+                        console.log(" response", response.data)
+                        _this.projectData = response.data.pageList.records
+                        _this.total= response.data.pageList.total
+                        if (response.data.code != 0) {
+                            _this.$message({
+                                message: response.data.msg,
+                                type: response.data.code == "warning"
+                            });
+                        }
+                    })
+            },
+            getProjectList(){
+                var _this = this;
+                _this.axios.defaults.headers.common['token'] = _this.$store.state.token
+                this.axios.post(this.config.baseURL + '/app/myProjectList  ')
+                    .then(function (response) {
+                        console.log(" 1112", response.data)
+                        _this.projectOptions = response.data.list
+
+                    })
+            },
+            goToDetail(row, event, column) {
+                console.log(row)
+                localStorage.setItem('depotId', row.id )
+                this.$router.push({
+                    name: 'repositorydetail',
+                })
+            },
+            //分页
+            pageSizeChangeHandle(val) {
+                this.page = 1
+                this.limit = val
+                if(this.$route.query.id){
+                    this.getDataList()
+                }else{
+                    this.getAllDeopr()
+                }
+            },
+            // 分页, 当前页
+            pageCurrentChangeHandle(val) {
+                this.page = val
+                if(this.$route.query.id){
+                    this.getDataList()
+                }else{
+                    this.getAllDeopr()
+                }
+            }
+        }
+    }
+</script>
+<style scoped>
+    * {
+        font-family: 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans CJK SC', Sathu, EucrosiaUPC, Arial, Helvetica, sans-serif;
+        color: #000;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    a {
+        color: #42b983;
+    }
+
+    .positories {
+        position: relative;
+        margin: 15px;
+        padding: 15px 30px;
+        margin-left: 310px;
+        min-height: calc(100vh - 60px);
+        background: #fff;
+        border-radius: 8px;
+    }
+
+    .positories .top {
+        width: 100%;
+        line-height: 40px;
+
+    }
+
+    .positories .top img {
+        float: left;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 1px solid #dedede;
+    }
+
+    .positories .top p {
+        float: left;
+        margin: 0 10px;
+        font-size: 14px;
+        color: #999;
+    }
+
+    .positories .top h3 {
+        font-size: 18px;
+        color: #000;
+    }
+
+    .entrepottable h4 {
+        width: 100%;
+        font-size: 14px;
+
+    }
+
+    .entrepottable p {
+        overflow: hidden;
+        display: block;
+        width: 100%;
+    }
+
+    .entrepottable p span {
+        font-size: 12px;
+        color: #999;
+    }
+
+    .entrepottable .el-table td {
+        padding: 6px 0;
+    }
+
+    .positories .iconlock {
+        display: block;
+        margin: 5px 10px;
+        width: 12px;
+        height: 16px;
+        background: url("../../assets/icon_lock.png") no-repeat;
+    }
+
+    .positories  .iconcode{
+        float: left;
+        margin-right: 10px;
+        display: inline-block;
+        width: 26px;
+        height: 26px;
+        line-height: 26px;
+        color: #fff;
+        text-align: center;
+        background: #438dd1;
+        border-radius: 50%;
+        cursor: pointer;
+        /*  background: url("../assets/icon_code.png") no-repeat;
+          background-size: cover;*/
+    }
+</style>
