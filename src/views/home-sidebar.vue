@@ -2,7 +2,7 @@
     <div>
         <ul class="nav-list">
             <li class="curli">
-                <router-link to="/home">
+                <router-link to="/">
               <span>
                   <img src="../assets/icon_sidebar_nav_0.png"/>
               </span>
@@ -12,7 +12,7 @@
             <li>
                 <router-link to="/projects">
               <span>
-                  <img src="../assets/icon_sidebar_nav_1.png"/>
+                  <img src="../assets/icon_sidebar_nav_7.png"/>
               </span>
                     <p>项目</p>
                 </router-link>
@@ -20,7 +20,7 @@
             <li>
                 <router-link  :to="{path:'/projectrepositories',query:{projectType:'all'}}" >
               <span>
-                  <img src="../assets/icon_sidebar_nav_3.png"/>
+                  <img src="../assets/icon_sidebar_nav_6.png"/>
               </span>
                     <p>代码仓库</p>
                 </router-link>
@@ -28,17 +28,17 @@
             <li>
                 <router-link to="/snippets">
               <span>
-                  <img src="../assets/icon_sidebar_nav_2.png"/>
+                  <img src="../assets/icon_sidebar_nav_5.png"/>
               </span>
                     <p>代码片段</p>
                 </router-link>
             </li>
-            <li>
+           <!-- <li>
               <span>
                   <img src="../assets/icon_sidebar_nav_4.png"/>
               </span>
                 <p>合并请求</p>
-            </li>
+            </li>-->
         </ul>
     </div>
 </template>
@@ -61,8 +61,7 @@
     .nav-list{
         position: fixed;
         left:0;
-        top:470px;
-        margin-top: 10px;
+        top:50%;
         width: 297px;
 
     }

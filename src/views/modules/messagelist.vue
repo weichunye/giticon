@@ -1,9 +1,9 @@
 <template>
   <div>
-    <MainSidebar></MainSidebar>
+    <MainSidebar ref="child"></MainSidebar>
     <HomeSidebar></HomeSidebar>
   <div class="messagelist">
-    <h3>项目</h3>
+    <h3>消息</h3>
     <!--项目-->
     <div class="box">
      <ul class="newslist">
@@ -45,7 +45,7 @@ export default {
             projectValue:'',
             messageData:[],
             page:1,
-            limit:4,
+            limit:10,
             total:0,
             projectName:''
         }
@@ -53,8 +53,6 @@ export default {
     mounted(){
     var _this=this;
     _this.getDataList()
-
-
     },
     methods:{
       //搜索提交
@@ -79,18 +77,17 @@ export default {
         //获取数据
         getDataList(){
             var _this=this;
-            _this.axios.defaults.headers.common['token'] = _this.$store.state.token
+            _this.axios.defaults.headers.common['token'] = _this.token
             this.axios.get(this.config.baseURL + '/app/depot/invitationWaitList')
                 .then(function (response) {
                     _this.messageData=response.data.list
-                    console.log(" this.messageData",  response.data)
-
+                    _this.$refs.child.messageLength= _this.messageData.length
                 })
         },
         //同意邀请
         agreeInfo(code){
             var _this=this;
-            _this.axios.defaults.headers.common['token'] = _this.$store.state.token
+            _this.axios.defaults.headers.common['token'] = _this.token
             this.axios.get(this.config.baseURL + '/app/depot/activeInvitation',{params:{code:code}})
                 .then(function (response) {
                     console.log(" this.messageData",  response.data)
@@ -217,11 +214,19 @@ export default {
     line-height: 20px;
     color: #333;
   }
+  .newslist li p h1{
+      font-size: 14px;
+  }
   .newslist li span{
     display: block;
     width: 100%;
     line-height: 30px;
     text-align: right;
   }
-
+  .newslist  h1{
+      font-size: 14px;
+  }
+  .newslist p{
+      font-size: 14px;
+  }
 </style>

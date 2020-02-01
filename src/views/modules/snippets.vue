@@ -1,9 +1,7 @@
 <template>
   <div>
-    <MainSidebar></MainSidebar>
-    <HomeSidebar></HomeSidebar>
     <div class="home">
-      <h3>项目</h3>
+      <h3>代码片段</h3>
       <!--项目-->
       <div class="box">
         <el-select size="medium" v-model="ownerType" placeholder="请选择" @change="getDataList('')">
@@ -64,31 +62,22 @@
                          background  :page-size="limit"   layout="total, prev, pager, next, jumper" :total="total">
           </el-pagination>
         </div>
-
-
       </div>
       <!--//项目-->
-
     </div>
   </div>
 </template>
 
 <script>
     // @ is an alias to /src
-    import MainSidebar from '../main-sidebar.vue';
-    import HomeSidebar from '../home-sidebar.vue';
     export default {
         name: 'snippets',
-        components: {
-            MainSidebar,
-            HomeSidebar
-        },
         data () {
             return {
                 snippetsName:'',
                 snippetsData:[],
                 page:1,
-                limit:5,
+                limit:10,
                 total:0,
                 ownerType:1,
                 ownerTypeOption:[
@@ -119,9 +108,12 @@
             goToPositores (row) {
                 var _this=this;
                 console.log(row)
-                localStorage.setItem('snippetsId', row.id )
                 this.$router.push({
                     name: 'snipperdetails',
+                  query: {
+                    snippetsId:row.id
+                  }
+
                 })
             },
             //获取数据
@@ -132,8 +124,8 @@
                     "limit":_this.limit,
                     "name":_this.snippetsName,
                     "ownerType":_this.ownerType,
-                    "ownerId": _this.$store.state.userInfo.userId,
-                    "createUserId": _this.$store.state.userInfo.userId,
+                    "ownerId": _this.userId,
+                    "createUserId": _this.userId,
 
 
                 }})
@@ -198,7 +190,7 @@
   }
   .home{
     position: relative;
-    margin:15px;
+    margin: 80px 15px 15px;
     padding: 15px 30px;
     margin-left: 310px;
     min-height: calc(100vh - 60px);

@@ -2,7 +2,7 @@
     <div class="sidebar">
         <ul class="nav-list">
           <li class="curli">
-              <router-link to="/home">
+              <router-link to="/">
               <span>
                   <img src="../assets/icon_sidebar_nav_0.png"/>
               </span>
@@ -12,7 +12,7 @@
             <li>
                 <router-link to="/projectrepositories">
               <span>
-                  <img src="../assets/icon_sidebar_nav_1.png"/>
+                  <img src="../assets/icon_sidebar_nav_6.png"/>
               </span>
                 <p>代码仓库</p>
                 </router-link>
@@ -20,21 +20,20 @@
             <li>
                 <router-link to="/snippets">
               <span>
-                  <img src="../assets/icon_sidebar_nav_2.png"/>
+                  <img src="../assets/icon_sidebar_nav_5.png"/>
               </span>
                 <p>代码片段</p>
                 </router-link>
             </li>
-
-            <li>
+            <li v-if="this.$route.query.projectName">
                 <router-link :to="{path:'/member',query:{membertype:'project',projectId:this.$route.query.projectId}}">
               <span>
-                  <img src="../assets/icon_sidebar_nav_3.png"/>
+                  <img src="../assets/icon_sidebar_nav_1.png"/>
               </span>
                     <p>成员</p>
                 </router-link>
             </li>
-            <li>
+          <!--  <li>
               <span>
                   <img src="../assets/icon_sidebar_nav_4.png"/>
               </span>
@@ -45,7 +44,7 @@
                   <img src="../assets/icon_sidebar_nav_4.png"/>
               </span>
                 <p>设置</p>
-            </li>
+            </li>-->
         </ul>
         <!--//导航-->
     </div>
@@ -64,9 +63,7 @@
         list-style-type: none;
         padding: 0;
     }
-    li {
-        display: inline-block;
-    }
+
     a {
         color: #42b983;
     }
@@ -84,8 +81,7 @@
     .sidebar .nav-list{
         position: fixed;
         left:0;
-        top:470px;
-        margin-top: 10px;
+        top:50%;
         width: 297px;
 
     }

@@ -1,15 +1,13 @@
 <template>
   <div>
-    <MainSidebar></MainSidebar>
-    <CodeSidebar></CodeSidebar>
   <div class="snippersrecord">
     <h3>代码片段历史</h3>
-
     <div class="block" style="margin-top: 20px">
       <el-timeline>
         <el-timeline-item v-for="item in snippetList"  :timestamp="item.createTime" placement="top">
           <el-card>
-            <span class="imgbor" @click="toCommiteDetal">{{picName=item.description?item.description.slice(0,1):''}}</span>
+           <!-- <span class="imgbor" @click="toCommiteDetal(item)">{{picName=item.description?item.description.slice(0,1):''}}</span>-->
+            <span class="imgbor">{{picName=item.description?item.description.slice(0,1):''}}</span>
             <h4>{{item.description=item.description?item.description:'暂无简介'}}</h4>
             <p>{{item.createUserName?item.createUserName:'null'}}： 提交于 {{item.createTime}} <span style="float: right">{{item.version}}</span> </p>
           </el-card>
@@ -22,26 +20,16 @@
                      background :page-size="limit" layout=" prev, next ">
       </el-pagination>
     </div>
-
   </div>
-
-
   </div>
 </template>
-
 <script>
 // @ is an alias to /src
-import MainSidebar from '../main-sidebar.vue';
-import CodeSidebar from '../code-sidebar.vue';
 export default {
   name: 'snippersrecord',
-  components: {
-      MainSidebar,
-      CodeSidebar
-  },
     data () {
         return {
-            snippetList:'',
+          snippetList:'',
             page:1,
             limit:5,
             total:1,
@@ -56,7 +44,7 @@ export default {
         getCordList(){
                 var _this=this;
                 this.axios.get(this.config.baseURL + '/app/snippetversion/list',{params:{
-                    'snippetId':localStorage.getItem('snippetsId')
+                    'snippetId': this.$route.query.snippetsId,
                 }})
                     .then(function (response) {
                         if(response.data.page.list.length==0){
@@ -80,8 +68,15 @@ export default {
 
         },
         //记录详情
-        toCommiteDetal(){
-
+        toCommiteDetal(item){
+            localStorage.setItem('snippetsId',item.snippetId)
+            this.$router.push({
+                name: 'snipperrecorddetail',
+                query: {
+                    'id':item.snippetId,
+                    'sha':item.version
+                }
+            })
         },
         //分页
         pageSizeChangeHandle(val) {
@@ -123,7 +118,7 @@ export default {
 
   .snippersrecord{
     position: relative;
-    margin:15px;
+    margin: 90px 15px 15px;
     padding: 15px 30px;
     margin-left: 310px;
     min-height: calc(100vh - 60px);

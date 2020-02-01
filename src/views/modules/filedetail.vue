@@ -1,7 +1,5 @@
 <template>
   <div>
-    <MainSidebar></MainSidebar>
-    <CodeSidebar></CodeSidebar>
   <div class="filedetail">
     <el-row>
       <el-col :span="12">
@@ -41,7 +39,11 @@
     <!--//仓库基本信息-->
     <!--新建文件-->
    <!-- {{fileContent}}-->
-    <codemirror  ref="myCm"  v-model="fileContent"  :options="cmOptions"   @changes="changes" class="code" ></codemirror>
+    <VueShowdown v-highlight v-if="ifEdit==false"
+            :markdown="fileContent"
+            flavor="github"
+            :options="{ emoji: true }"   style="border: 1px solid #dedede; min-height: 300px; padding: 15px"/>
+    <codemirror  v-else ref="myCm"  v-model="fileContent"  :options="cmOptions"   @changes="changes" class="code" ></codemirror>
   </div>
   </div>
 </template>
@@ -64,11 +66,8 @@ require('codemirror/addon/fold/comment-fold.js')
 export default {
   name: 'filedetail',
   components: {
-      CodeSidebar,
-      MainSidebar,
       codemirror
   },
-
     data () {
         return {
             webhookData:'',
@@ -82,6 +81,8 @@ export default {
             ifEdit:false,
             fileMsg:'',
             editInput:'',
+            projectId:this.$route.query.projectId,
+            depotId:this.$route.query.depotId,
             coder:null,
             cmOptions:{
                 tabSize: 4,
@@ -118,9 +119,9 @@ export default {
         //获取仓库基本信息
         getdepotInfo(){
             var _this=this;
-            this.axios.get(this.config.baseURL + '/app/depot/'+this.$route.query.projectId+'/'+this.$route.query.depotId,{params:{
-                'depotId':this.$route.query.depotId,
-                'projectId':this.$route.query.projectId
+            this.axios.get(this.config.baseURL + '/app/depot/'+this.projectId+'/'+this.depotId,{params:{
+                'depotId':this.depotId,
+                'projectId':this.projectId
             }})
                 .then(function (response) {
                     _this.depotName=response.data.depot.name
@@ -137,15 +138,13 @@ export default {
                 .then(function (response) {
                     _this.webhookData=response.data.headCommit;
                     console.log(" _this.webhookData", _this.webhookData)
-
                 })
         },
-
         //获取文件基本信息
         getFileInfo(sha){
             var _this=this;
             var params = new URLSearchParams();
-            params.append("depotId", _this.$route.query.depotId);
+            params.append("depotId", _this.depotId);
             params.append("sha",sha);
             params.append("path", _this.$route.query.path);
             _this.axios.post(this.config.baseURL + '/app/entry/getEntry ',params)
@@ -169,31 +168,30 @@ export default {
             _this.cmOptions.readOnly=false
         },
         changes(){
-
         },
         goHistory(){
             this.$router.go(-1)
         },
         creatNewFile(){
                 var _this=this;
-              _this.axios.defaults.headers.common['token'] = _this.$store.state.token
+          console.log("_this.$route.query.ref",_this.$route.query.ref)
+              _this.axios.defaults.headers.common['token'] = _this.token
                 var params = new URLSearchParams();
-                params.append("projectId",localStorage.getItem('projectId'));
-                params.append("depotId", localStorage.getItem('depotId'));
+                params.append("projectId",_this.projectId);
+                params.append("depotId", _this.depotId);
                 params.append("ref",_this.$route.query.ref);
                 params.append("path",  _this.$route.query.path);
                 params.append("content", _this.fileContent);
                 params.append("msg", _this.editInput);
-            _this.axios.post(this.config.baseURL + '/app/'+_this.$route.query.projectId+'/'+_this.$route.query.depotId+'/commit/master',params)
+            _this.axios.post(this.config.baseURL + '/app/'+_this.projectId+'/'+_this.depotId+'/commit/'+_this.$route.query.ref,params)
                     .then(function (response) {
-                          console.log(" this.000",  response)
                           _this.ifEdit=false;
                           _this.getFileInfo(response.data.sha)
                         _this.$router.push({
                             name: 'filedetail',
                             query: {
-                                'projectId': _this.$route.query.projectId,
-                                'depotId': _this.$route.query.depotId,
+                                'projectId': _this.projectId,
+                                'depotId': _this.depotId,
                                 'sha':response.data.sha,
                                 'path':_this.$route.query.path,
                                 'ref':_this.$route.query.ref,
@@ -207,6 +205,13 @@ export default {
                               type: msgType
                           });
 
+                      _this.$router.push({
+                        name: 'repositorydetail',
+                        query: {
+                          depotId:_this.depotId,
+                          projectId:_this.projectId
+                        }
+                      })
                     })
         },
     }
@@ -225,7 +230,7 @@ export default {
     margin-top: 20px;
   }
   .filedetail { position: relative;
-    margin:15px;
+    margin: 80px 15px 15px;
     padding: 15px 30px;
     margin-left: 310px;
     min-height: calc(100vh - 60px);

@@ -1,17 +1,20 @@
 const modeUrlObj = {
     // 生产环境
     'production': {
-        baseURL: 'http://xxx:9091/pro/',
+        baseURL: '  http://www.cstos.cstcloud.cn/csthub',
         authBaseURL: ''
     },
     // 开发环境
     'development': {
-        baseURL: ' http://192.168.1.120:8080/btm-fast',
+        /*baseURL: '  http://39.100.253.62:80/csthub',*/
+        baseURL: ' http://192.168.1.120:80/csthub',
+       /* baseURL: '  http://www.cstos.cstcloud.cn/csthub',*/
+       /* baseURL: '  http://www.cstos.cstcloud.cn/csthub',*/
         authBaseURL: ''
     },
     // 测试环境
     'test': {
-        baseURL: 'http://xxxx:9091/test/',
+        baseURL: ' http://39.100.253.62:80/csthub',
         authBaseURL: ''
     }
 }

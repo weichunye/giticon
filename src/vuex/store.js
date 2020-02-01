@@ -10,11 +10,11 @@ const store = new Vuex.Store({
     },
     mutations:{
         isLoginEd(state,msg){
-            state.userInfo= JSON.parse(msg) ;
+            state.userInfo= msg
             localStorage.setItem('userInfo', msg)
         },
         getToken(state,msg){
-            state.token= JSON.parse(msg) ;
+            state.token= msg
             localStorage.setItem('token', msg)
         },
         getProjectId(state,msg){

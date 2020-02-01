@@ -1,20 +1,18 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import login from './views/login.vue'
-
+import Home from './views/Home.vue'
 Vue.use(Router)
-
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'login',
-      component: login
+      name: 'home',
+      component: Home
     },
       {
-          path: '/home',
-          name: 'home',
-          component: () => import( './views/Home.vue')
+          path: '/login',
+          name: 'login',
+          component: () => import( './views/login.vue')
       },
     {
       path: '/about',
@@ -84,6 +82,12 @@ export default new Router({
           name: 'commiterecord',
           component: () => import( './views/modules/commiterecord.vue')
       },
+      //记录列表
+      {
+          path: '/commiterecordlist',
+          name: 'commiterecordlist',
+          component: () => import( './views/modules/commiterecordlist.vue')
+      },
       //提交记录详情
       {
           path: '/commitdetail',
@@ -95,12 +99,41 @@ export default new Router({
           path: '/snippersrecord',
           name: 'snippersrecord',
           component: () => import( './views/modules/snippersrecord.vue')
+      },//片段提交历史详情
+      {
+          path: '/snipperrecorddetail',
+          name: 'snipperrecorddetail',
+          component: () => import( './views/modules/snipperrecorddetail.vue')
       },
       //邀请列表
       {
           path: '/messagelist',
           name: 'messagelist',
           component: () => import( './views/modules/messagelist.vue')
+      },
+      //添加ssh
+      {
+          path: '/creatssh',
+          name: 'creatssh',
+          component: () => import( './views/modules/creatssh.vue')
+      },
+      //合并请求列表
+      {
+          path: '/MergeList',
+          name: 'MergeList',
+          component: () => import( './views/modules/mergelist.vue')
+      },
+      //合并请求
+      {
+          path: '/merge',
+          name: 'merge',
+          component: () => import( './views/modules/merge.vue')
+      },
+      //搜索
+      {
+          path: '/SearchPage',
+          name: 'SearchPage',
+          component: () => import( './views/modules/searchlist.vue')
       }
 
   ]

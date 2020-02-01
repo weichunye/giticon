@@ -1,7 +1,5 @@
 <template>
   <div>
-    <MainSidebar></MainSidebar>
-    <CodeSidebar></CodeSidebar>
   <div class="branch">
     <h3>仓库名称</h3>
     <!--项目-->
@@ -33,7 +31,7 @@
 
   </div>
 
-    <el-dialog title="新建分支" :visible.sync="dialogFormBranch">
+    <el-dialog title="新建分支" :visible.sync="dialogFormBranch" :close-on-click-modal="false">
       <el-input v-model="branchName" auto-complete="off" placeholder="请输入分支名称"></el-input>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormBranch = false">取 消</el-button>
@@ -60,9 +58,13 @@ export default {
             projectData:[],
             branchName:'',
             branchList:[],
+             projectId:"",
+             depotId:"",
         }
     },
     mounted(){
+       this.projectId=this.$route.query.projectId
+      this.depotId=this.$route.query.depotId
       this.getBranchList()
     },
     methods:{
@@ -72,9 +74,9 @@ export default {
         },
         getBranchList(){
             var _this=this;
-            this.axios.get(this.config.baseURL + '/app/user/*/project/*/git/'+localStorage.getItem('projectId')+'/'+localStorage.getItem('depotId')+'/refs',{params:{
-                'depotId':localStorage.getItem('depotId'),
-                'projectId':localStorage.getItem('projectId')
+            this.axios.get(this.config.baseURL + '/app/user/*/project/*/git/'+_this.projectId+'/'+_this.depotId+'/refs',{params:{
+                'depotId':_this.depotId,
+                'projectId':_this.projectId
             }})
                 .then(function (response) {
                     _this.projectData=response.data
@@ -92,14 +94,15 @@ export default {
         creatNewBranch(){
             var _this = this;
             /*this.$route.query.id;*/
-            _this.axios.defaults.headers.common['token'] = _this.$store.state.token
+            _this.axios.defaults.headers.common['token'] = _this.token
             var params = new URLSearchParams();
-            params.append("depotId",localStorage.getItem('depotId'));
+            params.append("depotId",_this.depotId);
             params.append("branch_name", _this.branchName);
             _this.axios.post(this.config.baseURL + '/app/user/*/project/*/git/branches/create', params)
                 .then(function (response) {
                     console.log(" response", response.data)
                     _this.dialogFormBranch=false
+                  _this.branchName=''
                   var  msgType=response.data.code==0?'success':'warning'
                     _this.$message({
                         message: response.data.msg,
@@ -111,9 +114,9 @@ export default {
         //删除分支
         delBranch(branchName){
             var _this = this;
-            _this.axios.defaults.headers.common['token'] = _this.$store.state.token
+            _this.axios.defaults.headers.common['token'] = _this.token
             var params = new URLSearchParams();
-            params.append("depotId",localStorage.getItem('depotId'));
+            params.append("depotId",_this.depotId);
             params.append("branch_name",branchName);
             _this.axios.post(this.config.baseURL + '/app/user/*/project/*/git/branches/delete', params)
                 .then(function (response) {
@@ -146,9 +149,6 @@ export default {
   ul {
     list-style-type: none;
     padding: 0;
-  }
-  li {
-    display: inline-block;
   }
 
   .branch{

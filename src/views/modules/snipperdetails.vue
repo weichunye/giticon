@@ -1,7 +1,5 @@
 <template>
   <div>
-    <MainSidebar></MainSidebar>
-    <HomeSidebar></HomeSidebar>
     <div class="snipperdetails">
       <el-row>
         <el-col :span="12">
@@ -14,7 +12,7 @@
         </el-col>
         <el-col :span="12"> </el-col>
       </el-row>
-      <router-link to="/snippersrecord">
+      <router-link  :to="{path:'/snippersrecord',query:{snippetsId:this.$route.query.snippetsId}}">
       <p class="text-1" >历史版本</p>
       </router-link>
       <div  style="text-align: right"  class="box">
@@ -79,15 +77,13 @@
     export default {
         name: 'snipperdetails',
         components: {
-            HomeSidebar,
-            MainSidebar,
             codemirror
         },
 
         data () {
             return {
                 snippetData:'',
-                ownerType:'',
+                ownerType:"",
                 snipperbName:'',//新建文件名称
                 fileDes:'',
                 fileContent:'',
@@ -134,15 +130,16 @@
             }
         },
         methods:{
-            //获取仓库基本信息
+            //获取代码片段基本信息
             getSnippersInfo(){
                 var _this=this;
-                this.axios.get(this.config.baseURL + '/app/snippet/info/'+ localStorage.getItem('snippetsId'),{params:{
-                    'id':localStorage.getItem('snippetsId')
+                this.axios.get(this.config.baseURL + '/app/snippet/info/'+ this.$route.query.snippetsId,{params:{
+                    'id':this.$route.query.snippetsId
                 }})
                     .then(function (response) {
                         console.log(" _this.snippetData", response)
                         _this.snippetData=response.data.snippet
+                        _this.ownerType=response.data.snippet.ownerType
                         _this.fileContent=response.data.snippet.codeSnippet
 
                     })
@@ -173,8 +170,9 @@
                     "id":null,
                     "codeSnippet": _this.fileContent,
                     "language":1,
-                    "ownerId": this.$store.state.userInfo.userId ,
-                    "createUserId": this.$store.state.userInfo.userId ,
+                    "ownerId": this.userId ,
+                    "createUserId": this.userId ,
+                    "createUserName": this.userInfo.trueName,
                     "ownerType": _this.snippetForm.ownerType,
                 };
                 console.log("params",formName)
@@ -198,16 +196,17 @@
             },
             creatNewFile(){
                 var _this=this;
-                _this.axios.defaults.headers.common['token'] = _this.$store.state.token
+                _this.axios.defaults.headers.common['token'] = _this.token
                 var params = {
                     "name": _this.snippetData.name,
                     "description":_this.snippetData.description,
                     "id":_this.snippetData.id,
                     "codeSnippet": _this.fileContent,
                     "language":1,
-                    "ownerId": this.$store.state.userInfo.userId ,
-                    "createUserId": this.$store.state.userInfo.userId ,
+                    "ownerId": this.userId ,
+                    "createUserId": this.userId ,
                     "ownerType": _this.ownerType,
+                    "createUserName": this.userInfo.trueName,
 
                 };
                 _this.axios.put(this.config.baseURL + '/app/snippet/update',params)
@@ -242,8 +241,9 @@
   .marT-20{
     margin-top: 20px;
   }
-  .snipperdetails { position: relative;
-    margin:15px;
+  .snipperdetails {
+    position: relative;
+    margin: 80px 15px 15px;
     padding: 15px 30px;
     margin-left: 310px;
     min-height: calc(100vh - 60px);

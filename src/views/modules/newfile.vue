@@ -116,10 +116,6 @@ export default {
     list-style-type: none;
     padding: 0;
   }
-  li {
-    display: inline-block;
-  }
-
   .newfile{
     position: relative;
     margin:15px;

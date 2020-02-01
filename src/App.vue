@@ -24,9 +24,14 @@
     padding: 0;
   }
 #app {
-  overflow: hidden;
   width: 100%;
-  min-height: calc(100vh);
-  background: #f5fafe;
+  height: 100%;
+  background: #fff;
+  border: 1px solid #fff;
+  box-sizing: border-box;
 }
+
+  html,body{
+    height:100%;
+  }
 </style>

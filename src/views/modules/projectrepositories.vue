@@ -1,16 +1,25 @@
 <template>
     <div>
         <MainSidebar></MainSidebar>
-        <ProjsetsSidebar></ProjsetsSidebar>
-
         <div class="positories">
 
             <el-row>
-                <el-col :span="10">
-                    <div class="top" v-if="this.$route.query.projectType!='all'">
+                <el-col :span="24">
+                    <div class="top">
                        <!-- <img src="../../assets/photo.jpg"/>-->
                         <!--<p>创建者  &nbsp  /</p>-->
-                        <h3>{{projectName}}</h3>
+                        <el-row>
+                            <el-col :span="16">
+                                <h3 v-if="this.$route.query.projectType!='all'">{{projectName}}</h3>
+                                <h3 v-else>仓库</h3>
+                            </el-col>
+                            <el-col :span="8">
+                                <router-link :to="{path:'/member',query:{membertype:'project',projectId:this.$route.query.projectId}}">
+                                <el-button style="float: right" type="primary" plain>成员管理</el-button>
+                                </router-link>
+                            </el-col>
+                        </el-row>
+
                     </div>
                 </el-col>
                 <el-col :span="4">
@@ -23,7 +32,6 @@
                         </el-option>
                     </el-select>-->
                 </el-col>
-
             </el-row>
             <el-row style="margin-top: 20px">
                 <el-col :span="5">
@@ -31,8 +39,24 @@
                 </el-col>
                 <el-col :span="1"> &nbsp</el-col>
                 <el-col :span="4">
-                    <el-button type="primary" size="medium" @click="getDataList(projectValue)">查询</el-button>
+                    <el-select size="medium" v-model="limitsType" placeholder="请选择" @change="searchSubmit()">
+                        <el-option
+                                v-for="item in limitsTypeOption"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
                 </el-col>
+                <el-col :span="1"> &nbsp</el-col>
+                <el-col :span="2">
+                    <el-button type="primary" size="medium" @click="searchSubmit()">查询</el-button>
+
+                </el-col>
+                <el-col :span="3">
+                    <el-button  size="medium" @click="resetFrom()">重置</el-button>
+                </el-col>
+
             </el-row>
           <!--  <el-row style="margin: 30px 0 10px">
                 <el-col :span="2">
@@ -57,8 +81,6 @@
                 <el-col :span="2"></el-col>
                 <el-col :span="2"></el-col>
             </el-row>-->
-
-
             <!--项目-->
             <div class="box">
                 <el-table class="projectData"
@@ -92,11 +114,12 @@
                             {{scope.row.lastUpdateTime}}
                         </template>
                     </el-table-column>
-                    <el-table-column width="60" prop="">
+               <!--     <el-table-column width="120" prop="">
                         <template slot-scope="scope">
-                            <span class="iconlock"></span>
+                            <span  style="float: left" class="iconlock"></span>
+                        &lt;!&ndash;    <el-button plain size="small">修改</el-button>&ndash;&gt;
                         </template>
-                    </el-table-column>
+                    </el-table-column>-->
                 </el-table>
                 <div style="margin-top: 30px; text-align: center">
                     <el-pagination @size-change="pageSizeChangeHandle" @current-change="pageCurrentChangeHandle"
@@ -104,10 +127,8 @@
                                    background :page-size="limit" layout="total, prev, pager, next, jumper" :total="total">
                     </el-pagination>
                 </div>
-
             </div>
             <!--//项目-->
-
         </div>
     </div>
 </template>
@@ -116,43 +137,51 @@
     // @ is an alias to /src
     import ProjsetsSidebar from '../projects-sidebar.vue';
     import MainSidebar from '../main-sidebar.vue';
-
     export default {
         name: 'projectrepositories',
         components: {
             ProjsetsSidebar,
             MainSidebar
         },
-
         data() {
             return {
                 projectName:'',
                 depotValue: '',
                 projectId: '',
                 page: 1,
-                limit:5,
+                limit:10,
                 total: 0,
                 projectOptions: [ ],
-                projectData: []
+                projectData: [],
+                limitsType:'',
+                limitsTypeOption:[
+                    { 'name':'  私有  ',
+                        id:1
+                    },
+                    { 'name':'  公有  ',
+                        id:2
+                    },
+                ],
             }
         },
         mounted() {
           this.projectName=localStorage.getItem('projectName')
-
             this.getProjectList()
-            if(this.$route.query.projectType=="all"){
-                this.getAllDeopr()
+            console.log("this.$route.query.projectId",this.$route.query.projectId)
+            if(this.$route.query.projectId){
+                console.log("000")
+                this.getDataList()
 
             }else{
-                this.getDataList()
+                console.log("LL")
+                this.getAllDeopr()
             }
-
-            this.$store.commit('getProjectId', this.$route.query.id)
+            this.$store.commit('getProjectId', this.$route.query.projectId)
         },
         watch: {
             '$route'(to, from) {
                 //监控路由，更新tab
-                if(this.$route.query.id){
+                if(this.$route.query.projectId){
                     this.getDataList()
                 }else{
                     this.getAllDeopr()
@@ -160,8 +189,17 @@
         },
         methods: {
             searchSubmit() {
-                console.log('11')
-
+                if(this.$route.query.id){
+                    this.getDataList()
+                }else{
+                    this.getAllDeopr()
+                }
+            },
+            resetFrom(){
+                var _this=this;
+                _this.depotValue=''
+                _this.limitsType=''
+                _this.searchSubmit()
             },
             getAllDeopr(){
                 var _this = this;
@@ -170,7 +208,8 @@
                 params.append("page", _this.page);
                 params.append("limit", _this.limit);
                 params.append("depotName", _this.depotValue);
-                params.append("accessLevel", "");
+                params.append("projectId", "");
+                params.append("accessLevel",  _this.limitsType)
                 this.axios.post(this.config.baseURL + '/app/depot/myDepotListPage ', params)
                     .then(function (response) {
                         console.log(" response", response.data)
@@ -185,9 +224,9 @@
                 var params = new URLSearchParams();
                 params.append("page", _this.page);
                 params.append("limit", _this.limit);
-                params.append("projectId", localStorage.getItem('projectId'));
-                params.append("depotName", _this.depotValue);
-                params.append("accessLevel", "");
+                params.append("projectId", _this.$route.query.projectId);
+                params.append("depotName", ""/*_this.$route.query.projectName*/);
+                params.append("accessLevel",  _this.limitsType);
                 this.axios.post(this.config.baseURL + '/app/getProjectDepotList ', params)
                     .then(function (response) {
                         console.log(" response", response.data)
@@ -203,7 +242,7 @@
             },
             getProjectList(){
                 var _this = this;
-                _this.axios.defaults.headers.common['token'] = _this.$store.state.token
+                _this.axios.defaults.headers.common['token'] = _this.token
                 this.axios.post(this.config.baseURL + '/app/myProjectList  ')
                     .then(function (response) {
                         console.log(" 1112", response.data)
@@ -212,10 +251,15 @@
                     })
             },
             goToDetail(row, event, column) {
-                console.log(row)
-                localStorage.setItem('depotId', row.id )
+                var _this=this
+                console.log("_this.$route.query.id",row)
                 this.$router.push({
                     name: 'repositorydetail',
+                    query: {
+                        'projectId':row.projectId,
+                        'depotId':row.id,
+
+                    }
                 })
             },
             //分页
@@ -257,7 +301,7 @@
 
     .positories {
         position: relative;
-        margin: 15px;
+        margin: 80px 15px 15px;
         padding: 15px 30px;
         margin-left: 310px;
         min-height: calc(100vh - 60px);

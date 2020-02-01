@@ -3,7 +3,7 @@
 
         <ul class="nav-list">
             <li class="curli">
-                <router-link to="/home">
+                <router-link to="/">
               <span>
                   <img src="../assets/icon_sidebar_nav_0.png"/>
               </span>
@@ -13,7 +13,7 @@
           <li>
               <router-link :to="{path:'/repositorydetail',query:{depotId:this.$route.query.depotId,projectId:this.$route.query.projectId}}">
               <span>
-                  <img src="../assets/icon_sidebar_nav_0.png"/>
+                  <img src="../assets/icon_sidebar_nav_6.png"/>
               </span>
               <p>源码</p>
               </router-link>
@@ -21,7 +21,7 @@
             <li>
                 <router-link  :to="{path:'/commiterecord',query:{depotId:this.$route.query.depotId}}">
               <span>
-                  <img src="../assets/icon_sidebar_nav_1.png"/>
+                  <img src="../assets/icon_sidebar_nav_9.png"/>
               </span>
                 <p>提交记录</p>
                 </router-link>
@@ -30,7 +30,7 @@
 
                 <router-link :to="{path:'/branch',query:{depotId:this.$route.query.depotId,projectId:this.$route.query.projectId}}">
               <span>
-                  <img src="../assets/icon_sidebar_nav_3.png"/>
+                  <img src="../assets/icon_sidebar_nav_8.png"/>
               </span>
                     <p>分支</p>
                 </router-link>
@@ -38,12 +38,12 @@
             <li>
                 <router-link :to="{path:'/member',query:{membertype:'depot',depotId:this.$route.query.depotId}}">
               <span>
-                  <img src="../assets/icon_sidebar_nav_3.png"/>
+                  <img src="../assets/icon_sidebar_nav_1.png"/>
               </span>
                     <p>成员</p>
                 </router-link>
             </li>
-            <li>
+         <!--   <li>
               <span>
                   <img src="../assets/icon_sidebar_nav_3.png"/>
               </span>
@@ -54,7 +54,7 @@
                   <img src="../assets/icon_sidebar_nav_4.png"/>
               </span>
                 <p>设置</p>
-            </li>
+            </li>-->
 
         </ul>
         <!--//导航-->
@@ -74,19 +74,13 @@
         list-style-type: none;
         padding: 0;
     }
-    li {
-        display: inline-block;
-    }
     a {
         color: #42b983;
     }
-
-
     .sidebar .nav-list{
         position: fixed;
         left:0;
-        top:470px;
-        margin-top: 10px;
+        top:50%;
         width: 297px;
 
     }

@@ -38,9 +38,6 @@
         list-style-type: none;
         padding: 0;
     }
-    li {
-        display: inline-block;
-    }
     a {
         color: #42b983;
     }

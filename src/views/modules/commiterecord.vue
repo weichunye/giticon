@@ -1,7 +1,5 @@
 <template>
   <div>
-    <MainSidebar></MainSidebar>
-    <CodeSidebar></CodeSidebar>
   <div class="commiterecord">
     <h3>提交记录</h3>
 
@@ -9,7 +7,9 @@
       <el-timeline>
         <el-timeline-item v-for="item in cordList"  :timestamp="item.commitDate" placement="top">
           <el-card>
-            <span class="imgbor" @click="toCommiteDetal">{{item.shortMessage.slice(0,1)}}</span>
+            {{item.path}}
+            <span class="imgbor" @click="toCommiteList(item.sha,item.path)">{{item.shortMessage.slice(0,1)}}</span>
+           <!-- <span class="imgbor">{{item.shortMessage.slice(0,1)}}</span>-->
             <h4>{{item.shortMessage}}</h4>
             <p>{{item.committer.name}} 提交于 {{item.commitDate}} <span style="float: right">{{item.sha}}</span> </p>
           </el-card>
@@ -62,10 +62,10 @@ export default {
         getCordList(){
             var _this = this;
             /*this.$route.query.id;*/
-           /* _this.axios.defaults.headers.common['token'] = _this.$store.state.token*/
+           /* _this.axios.defaults.headers.common['token'] = _this.token*/
            console.log("_this.page",_this.page)
             var params = new URLSearchParams();
-            params.append("depotId",localStorage.getItem('depotId'));
+            params.append("depotId",this.$route.query.depotId);
             params.append("page", _this.page);
             params.append("limit", _this.limit);
             params.append("ref", _this.branchName);
@@ -93,9 +93,28 @@ export default {
 
                 })
         },
+      //记录列表
+      toCommiteList(id,path){
+        console.log("id",id)
+        this.$router.push({
+          name: 'commiterecordlist',
+          query: {
+            'sha':id,
+            'depotId':this.$route.query.depotId,
+            'path':path
+          }
+        })
+      },
         //记录详情
-        toCommiteDetal(){
-
+        toCommiteDetal(id,path){
+            console.log("id",id)
+            this.$router.push({
+                name: 'commitdetail',
+                query: {
+                    'sha':id,
+                    'path':path
+                }
+            })
         },
         //分页
         pageSizeChangeHandle(val) {

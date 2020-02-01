@@ -1,7 +1,5 @@
 <template>
   <div>
-    <MainSidebar></MainSidebar>
-    <HomeSidebar></HomeSidebar>
   <div class="home">
     <h3>项目</h3>
     <!--项目-->
@@ -24,7 +22,6 @@
             <span class="iconcode" @click="goToPositores(scope.row)">{{scope.row.name.slice(0,1)}}</span>
             <p>{{scope.row.name}}</p>
           </template>
-
         </el-table-column>
         <el-table-column
                 prop="description"
@@ -56,42 +53,33 @@
             {{scope.row.lastUpdateTime.substring(0,10)}}
           </template>
         </el-table-column>
-        <el-table-column  width="60"  prop="lastUpdateTime">
+       <!-- <el-table-column  width="60"  prop="lastUpdateTime">
           <template slot-scope="scope">
             <span class="iconlock"></span>
           </template>
-        </el-table-column>
+        </el-table-column>-->
       </el-table>
       <div  style="margin-top: 20px; text-align: center">
         <el-pagination @size-change="pageSizeChangeHandle" @current-change="pageCurrentChangeHandle" :current-page="page"
                        background  :page-size="limit"   layout="total, prev, pager, next, jumper" :total="total">
         </el-pagination>
       </div>
-
-
     </div>
     <!--//项目-->
-
   </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import MainSidebar from '../main-sidebar.vue';
-import HomeSidebar from '../home-sidebar.vue';
 export default {
   name: 'projects',
-  components: {
-      MainSidebar,
-      HomeSidebar
-  },
     data () {
         return {
             projectValue:'',
             projectData:[],
             page:1,
-            limit:4,
+            limit:10,
             total:0,
             projectName:''
         }
@@ -112,12 +100,10 @@ export default {
             var _this=this;
             console.log(row)
             _this.$store.commit('getDepotId', row.id)
-            localStorage.setItem('projectId', row.id )
-            localStorage.setItem('projectName',row.name)
             this.$router.push({
                 name: 'projectrepositories',
                 query: {
-                    'id':row.id,
+                    'projectId':row.id,
                     'projectName':row.name
                 }
             })
@@ -125,7 +111,7 @@ export default {
         //获取数据
         getDataList(){
             var _this=this;
-            _this.axios.defaults.headers.common['token'] = _this.$store.state.token
+            _this.axios.defaults.headers.common['token'] = _this.token
             var params = new URLSearchParams();
             params.append("page", _this.page);
             params.append("limit", _this.limit);
@@ -170,15 +156,12 @@ export default {
     list-style-type: none;
     padding: 0;
   }
-  li {
-    display: inline-block;
-  }
   a {
     color: #42b983;
   }
   .home{
     position: relative;
-    margin:15px;
+    margin: 80px 15px 15px;
     padding: 15px 30px;
     margin-left: 310px;
     min-height: calc(100vh - 60px);
