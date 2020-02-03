@@ -1,6 +1,5 @@
 <template>
     <div>
-        <MainSidebar></MainSidebar>
         <div class="positories">
 
             <el-row>

@@ -11,25 +11,19 @@
                     background-color="#545c64"
                     text-color="#fff"
                     active-text-color="#ffd04b">
-                <router-link to="/">
-                <el-menu-item index="1">
+                <el-menu-item index="/" @click="goDetails('index')">
                     <i class="el-icon-menu"></i>
                     <span slot="title">工作台</span>
                 </el-menu-item>
-                </router-link>
-                <router-link to="/projects">
-                <el-menu-item index="projects">
+                <el-menu-item index="/projects" @click="goDetails('projects')">
                     <i class="el-icon-folder"></i>
                     <span slot="title">项目</span>
                 </el-menu-item>
-                </router-link>
-                <router-link  :to="{path:'/projectrepositories',query:{projectId:this.$route.query.projectId}}"  v-if="!this.$route.query.depotId">
-                <el-menu-item index="3"  >
+                <el-menu-item index="/projectrepositories"  v-if="!this.$route.query.depotId"  @click="goDetails('projectrepositories')">
                     <i class="el-icon-document-copy"></i>
                     <span slot="title">代码仓库</span>
                 </el-menu-item>
-                </router-link>
-                    <el-submenu index="3" v-else>
+                    <el-submenu index="3"  @click="goDetails('projectrepositories')" v-else>
                         <template slot="title">
                             <router-link  :to="{path:'/projectrepositories',query:{projectId:this.$route.query.projectId}}" >
                             <i class="el-icon-document-copy"></i>
@@ -37,35 +31,23 @@
                             </router-link>
                         </template>
                         <el-menu-item index="4-1">成员管理</el-menu-item>
-                        <router-link :to="{path:'/repositorydetail',query:{depotId:this.$route.query.depotId,projectId:this.$route.query.projectId}}">
-                        <el-menu-item index="4-2">源码</el-menu-item>
-                        </router-link>
-                        <router-link :to="{path:'/branch',query:{depotId:this.$route.query.depotId,projectId:this.$route.query.projectId}}">
-                        <el-menu-item index="4-3">分支管理</el-menu-item>
-                        </router-link>
-                        <router-link  :to="{path:'/MergeList',query:{depotId:this.$route.query.depotId,projectId:this.$route.query.projectId}}" >
-                        <el-menu-item index="4-4">合并请求</el-menu-item>
-                        </router-link>
-                        <router-link  :to="{path:'/commiterecord',query:{depotId:this.$route.query.depotId}}">
-                        <el-menu-item index="4-5">提交记录</el-menu-item>
-                        </router-link>
+                        <el-menu-item index="4-2"  @click="goDetails('repositorydetail')">源码</el-menu-item>
+                        <el-menu-item index="4-3"  @click="goDetails('branch')">分支管理</el-menu-item>
+                        <el-menu-item index="4-4"  @click="goDetails('MergeList')" >合并请求</el-menu-item>
+                        <el-menu-item index="4-5" @click="goDetails('commiterecord')">提交记录</el-menu-item>
                     </el-submenu>
-                <router-link to="/snippets">
-                <el-menu-item index="4">
+                <el-menu-item index="/snippets"  @click="goDetails('snippets')">
                     <i class="el-icon-postcard"></i>
                     <span slot="title">代码片段</span>
                 </el-menu-item>
-                </router-link>
            <!--     <el-menu-item index="6">
                     <i class="el-icon-setting"></i>
                     <span slot="title">合并请求</span>
                 </el-menu-item>-->
-                <router-link  :to="{path:'/creatssh'}" >
-                <el-menu-item index="5">
+                <el-menu-item index="/creatssh"  @click="goDetails('creatssh')">
                     <i class="el-icon-setting"></i>
                     <span slot="title">公钥管理</span>
                 </el-menu-item>
-                </router-link>
                  <!--   <el-menu-item index="8">
                         <i class="el-icon-setting"></i>
                         <span slot="title">源码</span>
@@ -103,10 +85,67 @@
             console.log("window.location.href ", this.$route.params.path)
             this.routePath = this.$route.path;
             console.log(" this,routePath", this.routePath)
-            /*this.token?this.getDataList():''*/
+            let path = this.$route.path;
+            this.navConfig = [
+                {index:'1',path:['/system/aa','/system/bb','/system/cc']},
+            ];
+            let thisNav = this.navConfig.find(item =>{
+                return item.path.includes(path);
+            });
+            this.defaultOpeneds = [thisNav.index];
 
         },
         methods: {
+
+            goDetails(ele){
+                var _this=this
+                var name=""
+                var params={}
+                if(ele=="index"){
+                    name="/"
+                    params={}
+                }
+                if(ele=="projects"){
+                    name="/projects"
+                    params={}
+                }
+                if(ele=="projectrepositories"){
+                    name="/projectrepositories"
+                    params={projectId:this.$route.query.projectId}
+                }
+                if(ele=="repositorydetail"){
+                    name="/repositorydetail"
+                    params={depotId:this.$route.query.depotId,projectId:this.$route.query.projectId}
+                }
+                if(ele=="branch"){
+                    name="/branch"
+                    params={depotId:this.$route.query.depotId,projectId:this.$route.query.projectId}
+                }
+                if(ele=="MergeList"){
+                    name="/MergeList"
+                    params={depotId:this.$route.query.depotId,projectId:this.$route.query.projectId}
+                }
+                if(ele=="commiterecord"){
+                    name="/commiterecord"
+                    params={depotId:this.$route.query.depotId}
+                }
+                if(ele=="snippets"){
+                    name="/snippets"
+                    params={}
+                }
+                if(ele=="creatssh"){
+                    name="/creatssh"
+                    params={}
+                }
+                console.log("name",name)
+                console.log("params",params)
+                _this.$router.push({path:name,params:params});
+                setTimeout(() => { //路由跳转
+
+                }, 100)
+
+
+            },
             handleOpen(key, keyPath) {
                 console.log(key, keyPath);
             },

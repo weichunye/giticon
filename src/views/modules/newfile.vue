@@ -1,7 +1,5 @@
 <template>
   <div>
-    <MainSidebar></MainSidebar>
-    <HomeSidebar></HomeSidebar>
   <div class="newfile">
     <h3>新建文件</h3>
     <!--项目-->

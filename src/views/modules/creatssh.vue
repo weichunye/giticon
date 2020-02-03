@@ -1,6 +1,5 @@
 <template>
   <div>
-    <MainSidebar></MainSidebar>
     <div class="ssh">
       <!--项目-->
       <div class="sshtop">
