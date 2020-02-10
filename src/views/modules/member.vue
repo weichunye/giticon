@@ -100,7 +100,7 @@ export default {
             params.append("page", _this.page);
             params.append("limit", _this.limit);
           params.append("userName", _this.memberValue);
-            params.append("projectId",localStorage.getItem('projectId'));
+            params.append("projectId",_this.$store.state.projectId);
             console.log("this.$store.state.token",this.$store.state.token)
             this.axios.post(this.config.baseURL + '/app/getProjectUserList',params)
                 .then(function (response) {
@@ -126,7 +126,7 @@ export default {
             params.append("page", _this.page);
             params.append("limit", _this.limit);
           params.append("userName", _this.memberValue);
-            params.append("depotId", localStorage.getItem('depotId'));
+            params.append("depotId", _this.$store.state.depotId);
             this.axios.post(this.config.baseURL + '/app/depot/getDepotUserList',params)
                 .then(function (response) {
                     console.log("=response.data",response.data)

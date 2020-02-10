@@ -30,7 +30,7 @@
                             <span>代码仓库</span>
                             </router-link>
                         </template>
-                        <el-menu-item index="4-1">成员管理</el-menu-item>
+                        <el-menu-item index="4-1"   @click="goDetails('member')">成员管理</el-menu-item>
                         <el-menu-item index="4-2"  @click="goDetails('repositorydetail')">源码</el-menu-item>
                         <el-menu-item index="4-3"  @click="goDetails('branch')">分支管理</el-menu-item>
                         <el-menu-item index="4-4"  @click="goDetails('MergeList')" >合并请求</el-menu-item>
@@ -127,7 +127,11 @@
                 }
                 if(ele=="commiterecord"){
                     name="/commiterecord"
-                    params={depotId:this.$route.query.depotId}
+                    params={depotId:this.$route.query.depotId,projectId:this.$route.query.projectId}
+                }
+                if(ele=="member"){
+                    name="/member"
+                    params={depotId:this.$route.query.depotId,projectId:this.$route.query.projectId}
                 }
                 if(ele=="snippets"){
                     name="/snippets"
@@ -139,9 +143,9 @@
                 }
                 console.log("name",name)
                 console.log("params",params)
-                _this.$router.push({path:name,params:params});
-                setTimeout(() => { //路由跳转
 
+                setTimeout(() => { //路由跳转
+                    _this.$router.push({path:name,query:params});
                 }, 100)
 
 

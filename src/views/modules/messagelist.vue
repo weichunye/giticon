@@ -1,7 +1,5 @@
 <template>
   <div>
-    <MainSidebar ref="child"></MainSidebar>
-    <HomeSidebar></HomeSidebar>
   <div class="messagelist">
     <h3>消息</h3>
     <!--项目-->

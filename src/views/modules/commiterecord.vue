@@ -46,7 +46,7 @@ export default {
             cordData:[],
             cordList:'',
             page:1,
-            limit:5,
+            limit:10,
             total:1,
             branchName:'master'
         }
@@ -89,7 +89,7 @@ export default {
                         return false
                     }
                     _this.cordData=response.data.pageList;
-                    _this.cordList=response.data.pageList.records;
+                    _this.cordList=response.data.pageList.records.slice(1,response.data.pageList.records.length)
 
                 })
         },

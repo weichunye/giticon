@@ -2,7 +2,21 @@
   <div>
   <div class="commiterecord">
     <h3>合并请求列表</h3>
-    <el-button type="primary" @click=" dialogCreatMerge=true">新建合并请求</el-button>
+    <el-row>
+      <el-col :span="14">
+    <el-form :inline="true"  class="demo-form-inline">
+      <el-form-item label="">
+        <el-input v-model="searchName"  size="medium" placeholder="输入搜索名称"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button size="medium" @click="getDataList">查询</el-button>
+      </el-form-item>
+    </el-form>
+      </el-col>
+      <el-col :span="10">
+        <el-button style="float: right" type="primary" @click=" dialogCreatMerge=true">新建合并请求</el-button>
+      </el-col>
+    </el-row>
     <div class="block" style="margin-top: 20px">
           <el-card  style="margin-top: 10px"  v-for="item in mergeList" >
             <div slot="header" class="clearfix">
@@ -14,6 +28,11 @@
               {{item.description}}
             </div>
           </el-card>
+    </div>
+    <div  style="margin-top: 20px; text-align: center">
+      <el-pagination @size-change="pageSizeChangeHandle" @current-change="pageCurrentChangeHandle" :current-page="page"
+                     background  :page-size="limit"   layout="total, prev, pager, next, jumper" :total="total">
+      </el-pagination>
     </div>
   </div>
 
@@ -119,11 +138,12 @@ export default {
             desc: [ { required: true, message: '请填写简介',trigger: 'blur' } ],
             ownerType: [ { required: true, message: '请选择审核人',trigger: 'blur' } ],
           },
+          searchName:'',//查询名称
           memberLisr:'',
            mergeList:'',
-            page:1,
-            limit:5,
-            total:1,
+          page:1,
+          limit:10,
+          total:0,
           mergeInfoData:{},
           checked:false,
           auditResult:""
@@ -138,16 +158,25 @@ export default {
       this.gemergeList()
     },
     methods:{
+    //查询
+      getDataList(){
+        this.page=1
+        this.gemergeList()
+
+      },
 
       //获取提交文件列表
       gemergeList(){
         var _this=this;
-        var params = new URLSearchParams();
-        params.append("params","");
-        params.append("title",_this.title);
-        _this.axios.get(_this.config.baseURL + '/app/pullReq/list',params)
+        _this.axios.get(_this.config.baseURL + '/app/pullReq/list',{params:{
+            "title":_this.searchName,
+            "page":_this.page,
+            "limit":_this.limit
+
+          }})
                 .then(function (response) {
                   _this.mergeList=response.data.page.list
+                  _this.total=response.data.page.totalCount
                   console.log(" response222", response)
                 })
       },
@@ -231,7 +260,7 @@ export default {
                         message: response.data.msg,
                         type: response.data.code == 0 ? "success" : "warning"
                       });
-                      dialogCreatMerge=false
+                      _this.dialogCreatMerge=false
                     })
           }})
 
@@ -264,6 +293,17 @@ export default {
 
                 })
       },
+      //分页
+      pageSizeChangeHandle(val) {
+        this.page = 1
+        this.limit = val
+        this.gemergeList()
+      },
+      // 分页, 当前页
+      pageCurrentChangeHandle(val) {
+        this.page = val
+        this.gemergeList()
+      }
 
     }
 }

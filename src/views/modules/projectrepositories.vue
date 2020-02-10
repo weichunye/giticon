@@ -9,7 +9,7 @@
                         <!--<p>创建者  &nbsp  /</p>-->
                         <el-row>
                             <el-col :span="16">
-                                <h3 v-if="this.$route.query.projectType!='all'">{{projectName}}</h3>
+                                <h3 v-if="projectName">{{projectName}}</h3>
                                 <h3 v-else>仓库</h3>
                             </el-col>
                             <el-col :span="8">
@@ -164,7 +164,7 @@
             }
         },
         mounted() {
-          this.projectName=localStorage.getItem('projectName')
+          this.projectName=this.$route.query.projectName
             this.getProjectList()
             console.log("this.$route.query.projectId",this.$route.query.projectId)
             if(this.$route.query.projectId){
