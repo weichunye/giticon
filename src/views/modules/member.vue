@@ -94,14 +94,12 @@ export default {
         //项目成员
         getProjectMember(){
             var _this=this;
-            console.log("_this.$store.state.projectId",_this.$store.state.projectId)
             _this.axios.defaults.headers.common['token'] = _this.token
             var params = new URLSearchParams();
             params.append("page", _this.page);
             params.append("limit", _this.limit);
           params.append("userName", _this.memberValue);
-            params.append("projectId",_this.$store.state.projectId);
-            console.log("this.$store.state.token",this.$store.state.token)
+            params.append("projectId",  _this.$route.query.projectId);
             this.axios.post(this.config.baseURL + '/app/getProjectUserList',params)
                 .then(function (response) {
                   console.log("response",response.data)
@@ -126,7 +124,7 @@ export default {
             params.append("page", _this.page);
             params.append("limit", _this.limit);
           params.append("userName", _this.memberValue);
-            params.append("depotId", _this.$store.state.depotId);
+            params.append("depotId",  _this.$route.query.depotId);
             this.axios.post(this.config.baseURL + '/app/depot/getDepotUserList',params)
                 .then(function (response) {
                     console.log("=response.data",response.data)
@@ -141,7 +139,7 @@ export default {
             var params = new URLSearchParams();
             params.append("authType", e);
             params.append("userId", id);
-            params.append("depotId", localStorage.getItem('depotId'));
+            params.append("depotId", _this.$route.query.depotId);
             this.axios.post(this.config.baseURL + '/app/depot/setUserAuth',params)
                 .then(function (response) {
                   _this.$message({

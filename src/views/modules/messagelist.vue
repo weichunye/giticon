@@ -167,6 +167,12 @@ export default {
   .entrepottable .el-table td{
     padding: 6px 0;
   }
+  .messagelist  .newslist span{
+      font-size: 12px;
+      line-height: 30px;
+      color: #999;
+  }
+
  .messagelist .iconlock{
     display: block;
     margin: 5px 10px;

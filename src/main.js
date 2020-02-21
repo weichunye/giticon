@@ -69,7 +69,7 @@ Vue.prototype.userId = "9";
 Vue.prototype.userInfo = {
    /* cstnetId: "cclhyt@163.com",*/
     cstnetId: "371246735@qq.com",
-    trueName: "魏春野",
+    trueName: "魏春野666",
     isSetHttpClonePwd:1,
 
 }

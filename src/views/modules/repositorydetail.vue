@@ -42,7 +42,7 @@
     <!--仓库基本信息-->
     <div v-if="ifNewFile==false">
       <el-row :gutter="10" class="marT-20">
-        <el-col :span="4">
+        <el-col :span="3">
           <el-select size="medium" v-model="branchName" placeholder="请选择" @change="getTreeList('')">
             <el-option
                     v-for="item in branchList"
@@ -55,6 +55,7 @@
       <!--  <el-col :span="4">  <el-input v-model="projectValue"  size="medium" placeholder="输入文件名称"></el-input></el-col>
         <el-col :span="4">   <el-button type="primary" size="medium" @click="">查询</el-button></el-col>-->
         <el-col :span="3">   <el-button type="primary" size="medium" @click="ifNewFile=true" >新建文件</el-button></el-col>
+        <el-col :span="3">   <el-button type="primary" size="medium" @click="dialogCreatMerge=true" >新建合并请求</el-button></el-col>
         <el-col :span="3">   <el-button type="primary" size="medium" @click="sendDiolog=true" >邀请新成员</el-button></el-col>
        <!-- <el-col :span="4"> &lt;!&ndash;  <el-button type="primary" size="medium" @click="dialogRepository=true" >修改仓库信息</el-button>&ndash;&gt;</el-col>-->
         <el-col :span="12">
@@ -219,6 +220,61 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog title="新建合并请求" :visible.sync="dialogCreatMerge" :close-on-click-modal=false>
+      <el-row :gutter="10" class="marT-20">
+        <el-col :span="4">
+          <el-select size="medium" v-model="sourceBranch" placeholder="请选择" @change="changeBranch()">
+            <el-option
+                    v-for="item in branchList"
+                    :key="item.simpleName"
+                    :label="item.simpleName"
+                    :value="item.simpleName">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="4">
+          <el-select size="medium" v-model="distBranch" placeholder="请选择" @change="changeBranch()">
+            <el-option
+                    v-for="item in branchList"
+                    :key="item.simpleName"
+                    :label="item.simpleName"
+                    :value="item.simpleName">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="4" v-if="ifCanMerge">
+          <p >可以合并</p>
+        </el-col>
+        <el-col :span="4" v-else>
+          <p>不可自动合并</p>
+        </el-col>
+
+      </el-row>
+      <el-form :model="mergeForm" :rules="rules2" ref="mergeForm" >
+        <el-form-item prop="name" label="请输入合并请求标题" >
+          <el-input v-model="mergeForm.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item prop="desc" label="描述内容" >
+          <el-input type="textarea" v-model="mergeForm.desc"></el-input>
+        </el-form-item>
+        <el-form-item label="选择审核人" prop="ownerType" >
+          <el-select size="medium" v-model="mergeForm.ownerType" placeholder="请选择">
+            <el-option
+                    v-for="item in memberLisr"
+                    :key="item.userId"
+                    :label="item.username"
+                    :value="item.userId">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <div style="display: block; text-align: center">
+            <el-button  @click=" resetForm('mergeForm')">取 消</el-button>
+            <el-button type="primary" @click=" crearMerge('mergeForm') ">确 定</el-button>
+          </div>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
 
   </div>
   </div>
@@ -368,7 +424,24 @@ export default {
                 foldGutter: true,
                 matchBrackets: true,  //括号匹配
                 autoCloseBrackets: true
-            }
+            },
+          dialogCreatMerge:false,
+          dialogMergeInfo:false,
+          sourceBranch:'master',//源分支
+          distBranch:'master',//目标分支
+          branchList:'',
+          ifCanMerge:false,
+          mergeForm:{
+            name:'',
+            desc:'',
+            ownerType:''
+          },
+          rules2: {
+            name: [{ required: true,message: '请填写名称', trigger: 'blur'}],
+            desc: [ { required: true, message: '请填写简介',trigger: 'blur' } ],
+            ownerType: [ { required: true, message: '请选择审核人',trigger: 'blur' } ],
+          },
+          memberLisr:''
         }
     },
     mounted(){
@@ -379,6 +452,8 @@ export default {
         this.getWebhookData()//获取top提交信息
         this.getdepotInfo()//获取仓库基本信息
         this.getTreeList()//获取Treelist
+        this.getDepotMember()//获取仓库成员
+        this.changeBranch()//默认是否可以合并
     },
     watch: {
         '$route'(to, from) {
@@ -487,6 +562,61 @@ export default {
                     }
                 })
         },
+      changeBranch(e){
+        var _this=this;
+        var params = new URLSearchParams();
+        params.append("depotId", _this.depotId);
+        params.append("srcBranch",_this.sourceBranch);
+        params.append("targetBranch", _this.distBranch);
+        _this.axios.post(_this.config.baseURL + '/app/pullReq/canMerge',params)
+                .then(function (response) {
+                  if(response.data.data=="ALREADY_MERGED"){
+                    console.log("ALREADY_MERGED")
+                    _this.ifCanMerge=true
+
+                  }
+                })
+      },
+      //仓库成员
+      getDepotMember(){
+        var _this=this;
+        _this.axios.defaults.headers.common['token'] = _this.token
+        var params = new URLSearchParams();
+        params.append("page", 1);
+        params.append("limit", 50);
+        params.append("userName", '');
+        params.append("depotId", _this.depotId);
+        this.axios.post(this.config.baseURL + '/app/depot/getDepotUserList',params)
+                .then(function (response) {
+                  console.log("=response.data",response.data)
+                  _this.memberLisr=response.data.pageList.records
+
+                })
+      },
+      //创建合并请求
+      crearMerge(formName){
+        var _this=this;
+        this.$refs[formName].validate((valid) => {
+          if(valid){
+            _this.axios.defaults.headers.common['token'] = _this.token
+            this.axios.post(this.config.baseURL + '/app/pullReq/createPullRequest',{
+              "auditUserId": _this.mergeForm.ownerType,
+              "depotId": 68,
+              "description": _this.mergeForm.desc,
+              "distBranch": _this.distBranch,
+              "sourceBranch": _this.sourceBranch,
+              "title": _this.mergeForm.name
+            })
+                    .then(function (response) {
+                      _this.$message({
+                        message: response.data.msg,
+                        type: response.data.code == 0 ? "success" : "warning"
+                      });
+                      _this.dialogCreatMerge=false
+                    })
+          }})
+
+      },
         //获取仓库基本信息
         getdepotInfo(){
             var _this=this;
@@ -536,6 +666,7 @@ export default {
             var _this=this;
             _this.$refs[formName].resetFields();
             this.ifNewFile=false
+          this.dialogCreatMerge=false
         },
         //新建文件pathFolder
         creatNewFile(newForm){
@@ -605,7 +736,7 @@ export default {
                         message: response.data.msg,
                         type: msgType
                     });
-
+                  _this.sendForm.email=""
                 })
 
         },

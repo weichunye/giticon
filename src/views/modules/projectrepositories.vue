@@ -188,7 +188,7 @@
         },
         methods: {
             searchSubmit() {
-                if(this.$route.query.id){
+                if(this.$route.query.projectId){
                     this.getDataList()
                 }else{
                     this.getAllDeopr()

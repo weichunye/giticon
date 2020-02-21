@@ -276,7 +276,7 @@
                                     });
                                     _this.dialogProjectForm = false
                                     _this.$refs[formName].resetFields();
-                                   /* _this.$router.go(0);*/
+                                    _this.$router.go(0);
                                 }
                             })
                     }

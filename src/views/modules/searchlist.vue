@@ -44,6 +44,12 @@
               </template>
             </el-table-column>
           </el-table>
+          <div style="margin-top: 30px; text-align: center">
+            <el-pagination @size-change="projectSizeChangeHandle" @current-change="projectCurrentChangeHandle"
+                           :current-page="project.page"
+                           background :page-size="project.limit" layout="total, prev, pager, next, jumper" :total="project.total">
+            </el-pagination>
+          </div>
         </el-tab-pane>
         <el-tab-pane label="仓库" name="second">
           <el-table class="projectData"
@@ -84,6 +90,12 @@
                      </template>
                  </el-table-column>-->
           </el-table>
+          <div style="margin-top: 30px; text-align: center">
+            <el-pagination @size-change="pageSizeChangeHandle" @current-change="pageCurrentChangeHandle"
+                           :current-page="page"
+                           background :page-size="limit" layout="total, prev, pager, next, jumper" :total="total">
+            </el-pagination>
+          </div>
         </el-tab-pane>
         <el-tab-pane label="代码片段" name="third">
           <el-table class="projectData"
@@ -122,6 +134,12 @@
               </template>
             </el-table-column>
           </el-table>
+          <div style="margin-top: 30px; text-align: center">
+            <el-pagination @size-change="pageSizeChangeHandle" @current-change="pageCurrentChangeHandle"
+                           :current-page="page"
+                           background :page-size="limit" layout="total, prev, pager, next, jumper" :total="total">
+            </el-pagination>
+          </div>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -134,14 +152,19 @@
     data () {
       return {
         activeName: '',
-        page:1,
-        limit:10,
-        total:'',
         dataLisr:'',
         activeName:'first',
+        page:1,
+        limit:10,
+        total:10,
         projectList:'',
         depotList:'',
         snippetList:'',
+        project:{
+          page:1,
+          limit:2,
+          total:10,
+        }
       }
     },
     mounted(){
@@ -150,7 +173,7 @@
     },
     watch: {
       '$route'(to, from) {
-        this.getBranchList()//获取分支列表
+        this.getSearchData()//获取分支列表
       }
     },
     methods:{
@@ -201,20 +224,23 @@
         _this.axios.post(_this.config.baseURL + '/app/index/search',params)
                 .then(function (response) {
                   _this.projectList=response.data.search.projectList
+                  _this.project.total=response.data.search.projectList.length
                   _this.depotList=response.data.search.depotList
                   _this.snippetList=response.data.search.snippetList
                   console.log("222222222",response.data)
                 })
       },
-      //分页
-      pageSizeChangeHandle(val) {
-        this.page = 1
-        this.limit = val
+      //项目分页
+      projectSizeChangeHandle(val) {
+        console.log(val)
+        this.project.page = 1
+        this.project.limit = val
         this.getDataList()
       },
-      // 分页, 当前页
-      pageCurrentChangeHandle(val) {
-        this.page = val
+      // 项目分页, 当前页
+      projectCurrentChangeHandle(id,val) {
+        console.log("id",id,val)
+        this.project.page = val
         this.getDataList()
       }
     }

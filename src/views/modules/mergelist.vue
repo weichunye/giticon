@@ -13,16 +13,19 @@
       </el-form-item>
     </el-form>
       </el-col>
-      <el-col :span="10">
-        <el-button style="float: right" type="primary" @click=" dialogCreatMerge=true">新建合并请求</el-button>
-      </el-col>
+<!--      <el-col :span="10">
+        <el-button style="float: right" type="primary" size="small" @click=" dialogCreatMerge=true">新建合并请求</el-button>
+      </el-col>-->
     </el-row>
     <div class="block" style="margin-top: 20px">
           <el-card  style="margin-top: 10px"  v-for="item in mergeList" >
             <div slot="header" class="clearfix">
               <span  >{{item.title}}</span>
-              <el-button  type="warning" plain  size="small" style="float: right; margin-left: 10px"  @click="closeMerge(item.id)">关闭合并</el-button>
-              <el-button  type="primary" plain  size="small" style="float: right; " @click="mergeInfo(item)" >确认合并</el-button>
+              <el-button v-if="item.auditStatus==1"  type="warning" plain  size="small" style="float: right; margin-left: 10px"  @click="closeMerge(item.id)">关闭合并</el-button>
+              <el-button v-if="item.auditStatus==1"   type="primary" plain  size="small" style="float: right; " @click="mergeInfo(item)" >确认合并</el-button>
+              <el-button v-if="item.auditStatus==2"   type="success" plain  size="small" style="float: right; " >审核通过</el-button>
+              <el-button v-if="item.auditStatus==3"   type="danger" plain  size="small" style="float: right; " >审核未通过</el-button>
+              <div style=" margin-top: 10px; font-size: 12px; color: #bfbdbd; line-height: 12px">{{item.createTime}}</div>
             </div>
             <div>
               {{item.description}}
@@ -50,61 +53,6 @@
             <el-button  @click=" resetForm()">取 消</el-button>
             <el-button type="primary" @click="agreeMerge()">确 定</el-button>
           </div>
-    </el-dialog>
-    <el-dialog title="新建合并请求" :visible.sync="dialogCreatMerge" :close-on-click-modal=false>
-      <el-row :gutter="10" class="marT-20">
-        <el-col :span="4">
-          <el-select size="medium" v-model="sourceBranch" placeholder="请选择" @change="changeBranch()">
-            <el-option
-                    v-for="item in branchList"
-                    :key="item.simpleName"
-                    :label="item.simpleName"
-                    :value="item.simpleName">
-            </el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="4">
-          <el-select size="medium" v-model="distBranch" placeholder="请选择" @change="changeBranch()">
-            <el-option
-                    v-for="item in branchList"
-                    :key="item.simpleName"
-                    :label="item.simpleName"
-                    :value="item.simpleName">
-            </el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="4" v-if="ifCanMerge">
-          <p >可以合并</p>
-        </el-col>
-        <el-col :span="4" v-else>
-          <p>不可自动合并</p>
-        </el-col>
-
-      </el-row>
-      <el-form :model="mergeForm" :rules="rules2" ref="mergeForm" >
-        <el-form-item prop="name" label="请输入合并请求标题" >
-          <el-input v-model="mergeForm.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item prop="desc" label="描述内容" >
-          <el-input type="textarea" v-model="mergeForm.desc"></el-input>
-        </el-form-item>
-        <el-form-item label="选择审核人" prop="ownerType" >
-          <el-select size="medium" v-model="mergeForm.ownerType" placeholder="请选择">
-            <el-option
-                    v-for="item in memberLisr"
-                    :key="item.userId"
-                    :label="item.username"
-                    :value="item.userId">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <div style="display: block; text-align: center">
-            <el-button  @click=" resetForm('projectForm','dialogRepository')">取 消</el-button>
-            <el-button type="primary" @click=" crearMerge('mergeForm') ">确 定</el-button>
-          </div>
-        </el-form-item>
-      </el-form>
     </el-dialog>
   </div>
 </template>
@@ -152,9 +100,8 @@ export default {
     mounted(){
       this.depotId=this.$route.query.depotId;
       this.projectId=this.$route.query.projectId;
-      this.getBranchList()//获取分支列表
-      this.changeBranch()
-      this.getDepotMember()
+   /*   this.getBranchList()//获取分支列表
+      this.getDepotMember()*/
       this.gemergeList()
     },
     methods:{
@@ -171,7 +118,8 @@ export default {
         _this.axios.get(_this.config.baseURL + '/app/pullReq/list',{params:{
             "title":_this.searchName,
             "page":_this.page,
-            "limit":_this.limit
+            "limit":_this.limit,
+           /* "depotId":_this.$route.query.depotId*/
 
           }})
                 .then(function (response) {
@@ -185,7 +133,7 @@ export default {
         _this.axios.defaults.headers.common['token'] = _this.token
         var params = new URLSearchParams();
         params.append("mergeId",_this.mergeInfoData.id);
-        params.append("depotId",_this.$route.query.depotId);
+        params.append("depotId",_this.mergeInfoData.depotId);
         params.append("srcBranch",_this.mergeInfoData.distBranch);
         params.append("targetBranch",_this.mergeInfoData.sourceBranch);
         params.append("fastforward",_this.checked);
@@ -198,6 +146,7 @@ export default {
                   });
                   if(response.data.code==0){
                     _this.dialogMergeInfo=false
+                    _this.gemergeList()
                   }
                 })
            },
@@ -212,6 +161,7 @@ export default {
                     message: response.data.msg,
                     type: response.data.code == 0 ? "success" : "warning"
                   });
+                  _this.gemergeList()
 
                 })
       },
@@ -226,22 +176,7 @@ export default {
         this.dialogMergeInfo=false
         this.dialogCreatMerge=false
       },
-      changeBranch(e){
-        var _this=this;
-        var params = new URLSearchParams();
-        params.append("depotId", _this.depotId);
-        params.append("srcBranch",_this.sourceBranch);
-        params.append("targetBranch", _this.distBranch);
-        _this.axios.post(_this.config.baseURL + '/app/pullReq/canMerge',params)
-                .then(function (response) {
-                  if(response.data.data=="ALREADY_MERGED"){
-                    console.log("ALREADY_MERGED")
-                    _this.ifCanMerge=true
-
-                  }
-                })
-      },
-      //穿件合并请求
+      //创建合并请求
       crearMerge(formName){
         var _this=this;
         this.$refs[formName].validate((valid) => {
@@ -250,10 +185,10 @@ export default {
             this.axios.post(this.config.baseURL + '/app/pullReq/createPullRequest',{
               "auditUserId": _this.mergeForm.ownerType,
               "depotId": 68,
-              "description": _this.mergeForm.name,
+              "description": _this.mergeForm.desc,
               "distBranch": _this.sourceBranch,
               "sourceBranch": _this.sourceBranch,
-              "title": _this.mergeForm.desc
+              "title": _this.mergeForm.name
             })
                     .then(function (response) {
                       _this.$message({
@@ -261,6 +196,7 @@ export default {
                         type: response.data.code == 0 ? "success" : "warning"
                       });
                       _this.dialogCreatMerge=false
+                      _this.gemergeList()
                     })
           }})
 
@@ -285,7 +221,7 @@ export default {
         params.append("page", _this.page);
         params.append("limit", _this.limit);
         params.append("userName", '');
-        params.append("depotId", _this.depotId);
+       /* params.append("depotId", _this.depotId);*/
         this.axios.post(this.config.baseURL + '/app/depot/getDepotUserList',params)
                 .then(function (response) {
                   console.log("=response.data",response.data)
@@ -327,6 +263,11 @@ export default {
     min-height: calc(100vh - 60px);
     background: #fff;
     border-radius: 8px;
+  }
+  .commiterecord .el-card__body div{
+    font-size: 14px;
+    line-height: 20px;
+    color: #666;
   }
   .commiterecord .imgbor{
     float: left;
