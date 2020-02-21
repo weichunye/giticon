@@ -91,9 +91,9 @@
                  </el-table-column>-->
           </el-table>
           <div style="margin-top: 30px; text-align: center">
-            <el-pagination @size-change="pageSizeChangeHandle" @current-change="pageCurrentChangeHandle"
-                           :current-page="page"
-                           background :page-size="limit" layout="total, prev, pager, next, jumper" :total="total">
+            <el-pagination @size-change="deportSizeChangeHandle" @current-change="deportCurrentChangeHandle"
+                           :current-page="deport.page"
+                           background :page-size="deport.limit" layout="total, prev, pager, next, jumper" :total="deport.total">
             </el-pagination>
           </div>
         </el-tab-pane>
@@ -127,17 +127,11 @@
                 {{scope.row.updateTime.substring(0,10)}}
               </template>
             </el-table-column>
-            <el-table-column  width="60"  prop="lastUpdateTime">
-              <template slot-scope="scope">
-                <!-- <span class="iconlock"></span>-->
-                <el-button type="danger" @click="delSnippet(scope.row)" size="mini">删除</el-button>
-              </template>
-            </el-table-column>
           </el-table>
           <div style="margin-top: 30px; text-align: center">
-            <el-pagination @size-change="pageSizeChangeHandle" @current-change="pageCurrentChangeHandle"
-                           :current-page="page"
-                           background :page-size="limit" layout="total, prev, pager, next, jumper" :total="total">
+            <el-pagination @size-change="snippetSizeChangeHandle" @current-change="snippetCurrentChangeHandle"
+                           :current-page="snipet.page"
+                           background :page-size="snipet.limit" layout="total, prev, pager, next, jumper" :total="snipet.total">
             </el-pagination>
           </div>
         </el-tab-pane>
@@ -151,6 +145,7 @@
     name: 'SearchPage',
     data () {
       return {
+        keyWord:'',
         activeName: '',
         dataLisr:'',
         activeName:'first',
@@ -162,24 +157,106 @@
         snippetList:'',
         project:{
           page:1,
-          limit:2,
-          total:10,
-        }
+          limit:10,
+          total:1,
+        },
+        deport:{
+          page:1,
+          limit:10,
+          total:1,
+        },
+        snipet:{
+          page:1,
+          limit:10,
+          total:1,
+        },
       }
     },
     mounted(){
-      this.getSearchData()
+      this.keyWord=this.$route.query.keyword
+      /*this.getSearchData()*/
+      this.getProjectsDataList()
+      this.getDeportDataList()
+      this.getSnippetDataList()
       /*this.$route.query.id;*/
     },
     watch: {
       '$route'(to, from) {
-        this.getSearchData()//获取分支列表
+        this.keyWord=this.$route.query.keyword
+        this.getProjectsDataList()
+        this.getDeportDataList()
+        this.getSnippetDataList()
       }
     },
     methods:{
       handleClick(tab, event) {
         console.log(tab, event);
     },
+      //获取项目数据
+      getProjectsDataList(){
+        var _this=this;
+        _this.axios.defaults.headers.common['token'] = _this.token
+        var params = new URLSearchParams();
+        params.append("page", _this.project.page);
+        params.append("limit", _this.project.limit);
+        params.append("projectName", _this.keyWord);
+        this.axios.post(this.config.baseURL + '/app/myProjectListPage',params)
+                .then(function (response) {
+                  _this.projectList=response.data.pageList.records
+                  _this.project.total=response.data.pageList.total
+
+                  if(response.data.code!=0){
+                    _this.$message({
+                      message: response.data.msg,
+                      type: response.data.code ==  "warning"
+                    });
+
+                  }
+                })
+      },
+      //获取仓库数据
+      getDeportDataList(val) {
+        var _this = this;
+        /*this.$route.query.id;*/
+        var params = new URLSearchParams();
+        params.append("page", _this.deport.page);
+        params.append("limit", _this.deport.limit);
+        params.append("depotName", _this.keyWord)
+        this.axios.post(this.config.baseURL + '/app/getProjectDepotList ', params)
+                .then(function (response) {
+
+                  _this.depotList = response.data.pageList.records
+                  _this.deport.total= response.data.pageList.total
+                  if (response.data.code != 0) {
+                    _this.$message({
+                      message: response.data.msg,
+                      type: response.data.code == "warning"
+                    });
+                  }
+                })
+      },
+      //获取代码片段数据
+      getSnippetDataList(){
+        var _this=this;
+        this.axios.get(this.config.baseURL + '/app/snippet/list',{params:{
+            "page":_this.snipet.page,
+            "limit":_this.snipet.limit,
+            "name":_this.keyWord,
+
+          }})
+                .then(function (response) {
+                  _this.snippetList=response.data.page.records
+                  _this.snipet.total=response.data.page.total
+
+                  if(response.data.code!=0){
+                    _this.$message({
+                      message: response.data.msg,
+                      type: response.data.code ==  "warning"
+                    });
+
+                  }
+                })
+      },
       //行点击事件
       goToProjects (row, event, column) {
         var _this=this;
@@ -235,14 +312,40 @@
         console.log(val)
         this.project.page = 1
         this.project.limit = val
-        this.getDataList()
+        this.getProjectsDataList()
       },
       // 项目分页, 当前页
-      projectCurrentChangeHandle(id,val) {
-        console.log("id",id,val)
+      projectCurrentChangeHandle(val) {
+        console.log("id",val)
         this.project.page = val
-        this.getDataList()
-      }
+        this.getProjectsDataList()
+      },
+      //仓库分页
+      deportSizeChangeHandle(val) {
+        console.log("11",val)
+        this.deport.page = 1
+        this.deport.limit = val
+        this.getDeportDataList()
+      },
+      // 仓库分页, 当前页
+      deportCurrentChangeHandle(val) {
+        console.log("id",val)
+        this.deport.page = val
+        this.getDeportDataList()
+      },
+      //代码片段分页
+      snippetSizeChangeHandle(val) {
+        console.log("11",val)
+        this.snipet.page = 1
+        this.snipet.limit = val
+        this.getSnippetDataList()
+      },
+      // 代码片段分页, 当前页
+      snippetCurrentChangeHandle(val) {
+        console.log("id",val)
+        this.snipet.page = val
+        this.getSnippetDataList()
+      },
     }
   }
 </script>

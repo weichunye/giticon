@@ -4,7 +4,7 @@
             <img class="logo" src="../assets/logo.png"/>
             <p class="logoname">CSTHUB</p>
             <div  class="search-box">
-                <input v-model="keyword"/>
+                <input v-model="keyword"  @keyup.enter="searchSubmit"/>
                 <router-link :to="{path:'/SearchPage',query:{keyword:keyword}}">
                 <button>搜索</button>
                 </router-link>
@@ -238,7 +238,13 @@
         },
         methods: {
             searchSubmit() {
-                console.log('11')
+                this.$router.push({
+                    name: 'SearchPage',
+                    query: {
+                        keyword:this.keyword
+                    }
+
+                })
 
             },
 
