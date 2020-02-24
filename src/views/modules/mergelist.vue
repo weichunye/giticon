@@ -134,8 +134,8 @@ export default {
         var params = new URLSearchParams();
         params.append("mergeId",_this.mergeInfoData.id);
         params.append("depotId",_this.mergeInfoData.depotId);
-        params.append("srcBranch",_this.mergeInfoData.distBranch);
-        params.append("targetBranch",_this.mergeInfoData.sourceBranch);
+        params.append("srcBranch",_this.mergeInfoData.sourceBranch);
+        params.append("targetBranch",_this.mergeInfoData.distBranch);
         params.append("fastforward",_this.checked);
         params.append("auditResult",_this.auditResult);
         _this.axios.post(_this.config.baseURL + '/app/pullReq/confirmPullRequest',params)
@@ -145,6 +145,7 @@ export default {
                     type: response.data.code == 0 ? "success" : "warning"
                   });
                   if(response.data.code==0){
+                    _this.auditResult=""
                     _this.dialogMergeInfo=false
                     _this.gemergeList()
                   }
@@ -176,31 +177,7 @@ export default {
         this.dialogMergeInfo=false
         this.dialogCreatMerge=false
       },
-      //创建合并请求
-      crearMerge(formName){
-        var _this=this;
-        this.$refs[formName].validate((valid) => {
-          if(valid){
-            _this.axios.defaults.headers.common['token'] = _this.token
-            this.axios.post(this.config.baseURL + '/app/pullReq/createPullRequest',{
-              "auditUserId": _this.mergeForm.ownerType,
-              "depotId": 68,
-              "description": _this.mergeForm.desc,
-              "distBranch": _this.sourceBranch,
-              "sourceBranch": _this.sourceBranch,
-              "title": _this.mergeForm.name
-            })
-                    .then(function (response) {
-                      _this.$message({
-                        message: response.data.msg,
-                        type: response.data.code == 0 ? "success" : "warning"
-                      });
-                      _this.dialogCreatMerge=false
-                      _this.gemergeList()
-                    })
-          }})
 
-      },
       //获取分支
       getBranchList(){
         var _this=this;

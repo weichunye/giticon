@@ -243,10 +243,10 @@
           </el-select>
         </el-col>
         <el-col :span="4" v-if="ifCanMerge">
-          <p >可以合并</p>
+          <p  style="margin-left: 10px; line-height:40px">可以合并</p>
         </el-col>
         <el-col :span="4" v-else>
-          <p>不可自动合并</p>
+          <p  style="margin-left: 10px;line-height:40px; color: #d31519"> 不可自动合并</p>
         </el-col>
 
       </el-row>
@@ -270,7 +270,7 @@
         <el-form-item>
           <div style="display: block; text-align: center">
             <el-button  @click=" resetForm('mergeForm')">取 消</el-button>
-            <el-button type="primary" @click=" crearMerge('mergeForm') ">确 定</el-button>
+            <el-button :disabled="!ifCanMerge" type="primary" @click=" crearMerge('mergeForm') ">确 定</el-button>
           </div>
         </el-form-item>
       </el-form>
@@ -572,8 +572,12 @@ export default {
                 .then(function (response) {
                   if(response.data.data=="ALREADY_MERGED"){
                     console.log("ALREADY_MERGED")
+                    console.log("可合并")
                     _this.ifCanMerge=true
 
+                  }else{
+                    console.log("不可合并")
+                    _this.ifCanMerge=false
                   }
                 })
       },
@@ -612,6 +616,7 @@ export default {
                         message: response.data.msg,
                         type: response.data.code == 0 ? "success" : "warning"
                       });
+                      _this.$refs[formName].resetFields();
                       _this.dialogCreatMerge=false
                     })
           }})
