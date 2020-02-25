@@ -40,12 +40,12 @@
   </div>
 
     <el-dialog title="合并请求信息" :visible.sync="dialogMergeInfo" :close-on-click-modal=false>
-      <div>
-        <p> {{mergeInfoData.title}}</p>
-        <p> {{mergeInfoData.description}}</p>
-        <p><span> 源分支：{{mergeInfoData.sourceBranch}}</span><span style="margin-left: 10px">目标分支{{mergeInfoData.distBranch}}</span></p>
+      <div class="dia-box">
+        <p> <b>{{mergeInfoData.title}}</b></p>
+        <p style="padding: 10px 0"> {{mergeInfoData.description}}</p>
+        <p><span> 源分支：<em style="color: #4495ca">{{mergeInfoData.sourceBranch}}</em></span><span style="margin-left: 10px">目标分支: <em style="color: salmon">{{mergeInfoData.distBranch}}</em> </span></p>
         <p> </p>
-        <textarea style="width: 100%; min-height: 100px" v-model="auditResult"></textarea>
+        <textarea style="width: 100%; min-height: 100px; color: #666; padding: 10px 0; text-indent: 16px" v-model="auditResult"></textarea>
         <p><el-checkbox v-model="checked">是否Fast-Forward 模式合并</el-checkbox></p>
       </div>
 
@@ -324,6 +324,13 @@ export default {
   .commiterecord .menmerList dd{
     float: right;
     margin-right: 10px;
+  }
+  .dia-box p{
+    color: #666;
+    margin-bottom: 10px;
+  }
+  .dia-box em{
+    font-style: normal;
   }
 
 </style>

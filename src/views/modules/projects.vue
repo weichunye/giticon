@@ -17,7 +17,7 @@
                 style="width: 100%"   >
         <el-table-column
                 label="项目名称"
-                width="180">
+                width="300">
           <template slot-scope="scope">
             <span class="iconcode" @click="goToPositores(scope.row)">{{scope.row.name.slice(0,1)}}</span>
             <p>{{scope.row.name}}</p>
@@ -39,14 +39,14 @@
                 prop="userNum"
                 label="项目成员">
         </el-table-column>
-        <el-table-column
+        <el-table-column  width="120"
                 prop="createTime"
                 label="创建时间">
           <template slot-scope="scope">
             {{scope.row.createTime.substring(0,10)}}
           </template>
         </el-table-column>
-        <el-table-column
+        <el-table-column width="120"
                 prop="lastUpdateTime"
                 label="上次更新">
           <template slot-scope="scope">

@@ -85,10 +85,9 @@
                 <el-table class="projectData"
                           :data="projectData"
                           style="width: 100%">
-                    <el-table-column
+                    <el-table-column  width="300"
                             prop="fragmentName"
-                            label="仓库名称"
-                            width="230">
+                            label="仓库名称">
                         <template slot-scope="scope">
                             <span class="iconcode"  @click="goToDetail(scope.row)">{{scope.row.name.slice(0,1)}}</span>
                             <p>{{scope.row.name}}</p>
@@ -99,14 +98,14 @@
                             prop="description"
                             label="描述">
                     </el-table-column>
-                    <el-table-column
+                    <el-table-column  width="120"
                             prop="createTime"
                             label="创建时间">
                         <template slot-scope="scope">
                             {{scope.row.createTime.substring(0,10)}}
                         </template>
                     </el-table-column>
-                    <el-table-column
+                    <el-table-column   width="120"
                             prop="name"
                             label="上次更新">
                         <template slot-scope="scope">

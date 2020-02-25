@@ -124,7 +124,7 @@
                     "limit":_this.limit,
                     "name":_this.snippetsName,
                     "ownerType":_this.ownerType,
-                    "ownerId": _this.userId,
+                    "ownerId":'',
                     "createUserId": _this.userId,
 
 

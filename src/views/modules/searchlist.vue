@@ -5,9 +5,8 @@
           <el-table class="projectData"
                     :data="projectList"
                     style="width: 100%"   >
-            <el-table-column
-                    label="项目名称"
-                    width="180">
+            <el-table-column  width="300"
+                    label="项目名称">
               <template slot-scope="scope">
                 <span class="iconcode" @click="goToProjects(scope.row)">{{scope.row.name.slice(0,1)}}</span>
                 <p>{{scope.row.name}}</p>
@@ -29,14 +28,14 @@
                              prop="userNum"
                              label="项目成员">
             </el-table-column>
-            <el-table-column
+            <el-table-column  width="180"
                     prop="createTime"
                     label="创建时间">
               <template slot-scope="scope">
                 {{scope.row.createTime.substring(0,10)}}
               </template>
             </el-table-column>
-            <el-table-column
+            <el-table-column  width="180"
                     prop="lastUpdateTime"
                     label="上次更新">
               <template slot-scope="scope">
@@ -55,10 +54,9 @@
           <el-table class="projectData"
                     :data="depotList"
                     style="width: 100%">
-            <el-table-column
+            <el-table-column  width="300"
                     prop="fragmentName"
-                    label="仓库名称"
-                    width="230">
+                    label="仓库名称">
               <template slot-scope="scope">
                 <span class="iconcode"  @click="goToDetail(scope.row)">{{scope.row.name.slice(0,1)}}</span>
                 <p>{{scope.row.name}}</p>
@@ -69,14 +67,14 @@
                     prop="description"
                     label="描述">
             </el-table-column>
-            <el-table-column
+            <el-table-column  width="180"
                     prop="createTime"
                     label="创建时间">
               <template slot-scope="scope">
                 {{scope.row.createTime.substring(0,10)}}
               </template>
             </el-table-column>
-            <el-table-column
+            <el-table-column  width="180"
                     prop="name"
                     label="上次更新">
               <template slot-scope="scope">
@@ -103,7 +101,7 @@
                     style="width: 100%"    >
             <el-table-column
                     label="片段名称"
-                    width="180"   prop="name">
+                    prop="name">
               <template slot-scope="scope">
                 <span class="iconcode" @click="goToPositores(scope.row)"> {{scope.row.name.slice(0,1)}}</span>
                 <p>{{scope.row.name}}</p>
@@ -113,14 +111,14 @@
                     prop="username"
                     label="创建人">
             </el-table-column>
-            <el-table-column
+            <el-table-column  width="180"
                     prop="createTime"
                     label="创建时间">
               <template slot-scope="scope">
                 {{scope.row.createTime.substring(0,10)}}
               </template>
             </el-table-column>
-            <el-table-column
+            <el-table-column  width="180"
                     prop="updateTime"
                     label="上次更新">
               <template slot-scope="scope">
