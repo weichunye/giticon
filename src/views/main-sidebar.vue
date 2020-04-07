@@ -49,7 +49,7 @@
                     <span slot="title">公钥管理</span>
                 </el-menu-item>
                 <el-menu-item index="/MergeList"  @click="goDetails('MergeList')">
-                    <i class="el-icon-setting"></i>
+                    <i class="el-icon-edit-outline"></i>
                     <span slot="title">合并请求</span>
                 </el-menu-item>
                  <!--   <el-menu-item index="8">

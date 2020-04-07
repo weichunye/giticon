@@ -26,7 +26,7 @@
           <el-table-column
                   prop="name"
                   label="项目名称"
-                  width="180">
+                  width="360">
             <template slot-scope="scope">
               <span class="iconcode"  @click="goToPositores(scope.row)">{{scope.row.name.slice(0,1)}}</span>
               <p>{{scope.row.name}}</p>
@@ -51,14 +51,16 @@
           </el-table-column>
           <el-table-column
                   prop="createTime"
-                  label="创建时间">
+                  label="创建时间"
+                  width="180">
             <template slot-scope="scope">
               {{scope.row.createTime.substring(0,10)}}
             </template>
           </el-table-column>
           <el-table-column
                   prop="lastUpdateTime"
-                  label="上次更新">
+                  label="上次更新"
+                  width="180">
             <template slot-scope="scope">
               {{scope.row.lastUpdateTime.substring(0,10)}}
             </template>
@@ -74,7 +76,7 @@
           <el-table-column
                   prop="entrepot"
                   label="代码仓库"
-                  width="180">
+                  width="360">
             <template slot-scope="scope">
               <span class="iconcode"   @click="goToDopot(scope.row)">{{scope.row.name.slice(0,1)}}</span>
               <h4>{{scope.row.name}}</h4>
@@ -118,7 +120,7 @@
           <el-table-column
                   prop="name"
                   label="片段名称"
-                  width="180">
+                  width="360">
             <template slot-scope="scope">
               <span class="iconcode"  @click="goToSnipper(scope.row)">{{scope.row.name.slice(0,1)}}</span>
               <h4>{{scope.row.name}}</h4>
@@ -131,14 +133,17 @@
           </el-table-column>
           <el-table-column
                   prop="createTime"
-                  label="创建时间">
+                  label="创建时间"
+                  width="180">
             <template slot-scope="scope">
               {{scope.row.createTime.substring(0,10)}}
             </template>
           </el-table-column>
           <el-table-column
                   prop="lastUpdateTime"
-                  label="上次更新">
+                  label="上次更新"
+                  width="180"
+          >
             <template slot-scope="scope">
               {{scope.row.updateTime.substring(0,10)}}
             </template>
@@ -148,6 +153,21 @@
         <div class="morelink"><router-link to="/snippets">更多</router-link></div>
       </div>
       <!--//代码片段-->
+      <div  class="box box4">
+       <h3>软件上传细则</h3>
+        <p>本网站（网址：cstos.cstcloud.cn） 向公众开放并提供开源软件相关服务。 在使用本网站前，敬请您仔细阅读以下各项使用条款（以下简称“本使用条款”）。您对本网站的使用(包括但不限于对本网站的访问、登录，对本网站内容的浏览和使用)，将被视为您自愿承诺接受本声明的约束。如果您对本使用条款的内容不能接受，您应当立即停止使用本网站并迅速离开。</p>
+        <p>
+          <span> （1）知识产权声明</span>
+          您同意遵守所有适用本网站的版权保护法律法规，以及所有本网站包含的补充性的版权说明或限制。本网站的内容均由相应的机构/个人上传、维护。对于本网站内容的任何使用请遵守内容所附带的授权协议。如不清楚相应的授权协议请询问上传该内容的机构/个人。
+          任何在cstos.cstcloud.cn上注册的帐号上传的内容的版权均归上传者所有，上传者承担所有被上传内容的版权责任及相应风险。
+         <span> （2）上传软件规范</span>
+          代码仓库如有违反国家法律、法规或社会公共秩序、社会风气的，本网站及本网站方（包括但不限于本网站的主办单位等）不承担任何责任，依法追究上传者的相关责任。所有开源软件的著作权、与软件有关的肖像权和名誉权等法律问题，由上传者自行解决并承担相应责任。
+          <span>（3）代码仓库</span>
+          本网站规定每个仓库的大小上限为1个G，禁止大量的外链请求到本网站，并且不允许存放与代码无关的文件，如果根据代码的实际情况确需更大容量仓库，请联系我们，说明使用场景和原因以进行申请，我们邮件同意后方可上传更大的仓库，如果未经允许私自上传超过1个GD的仓库、与代码无关的文件或者大量的外链请求，本网站保留停止仓库的使用以及通知作者自行备份并随时删除的权利。
+
+
+        </p>
+      </div>
     </div>
 
   </div>
@@ -339,6 +359,28 @@
   }
   .home .box2{
     background: #f3faf4;
+  }
+  .home .box4{
+    background: #224a71;
+  }
+  .home .box4 h3{
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    line-height: 50px;
+    color: #fff;
+  }
+  .home .box4 p{
+    font-size: 12px;
+    line-height: 20px;
+    color: #d4e3f1;
+  }
+  .home .box4 p span{
+    display: block;
+    width: 100%;
+    padding: 10px 0 5px;
+    font-size: 14px;
+    color: #fff;
   }
   .home .box2 .el-table td , .home .box2 .el-table th{
     background: #f3faf4;

@@ -25,7 +25,7 @@
                   style="width: 100%"    >
           <el-table-column
                   label="片段名称"
-                  width="180"   prop="name">
+                  width="300"   prop="name">
             <template slot-scope="scope">
               <span class="iconcode" @click="goToPositores(scope.row)"> {{scope.row.name.slice(0,1)}}</span>
               <p>{{scope.row.name}}</p>
