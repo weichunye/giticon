@@ -275,7 +275,7 @@
                 this.$router.push({
                     name: 'projectrepositories',
                     query: {
-                        'id':row.id,
+                        'projectId':row.id,
 
                     }
                 })

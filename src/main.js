@@ -64,8 +64,8 @@ if(userEntity){
     Vue.prototype.userInfo = userEntity.userInfo;
     Vue.prototype.userId = userEntity.userId;
 }
-Vue.prototype.token = "053e493eac1c3c9ab9cdf7b752d98e94";
-Vue.prototype.userId = "18";
+Vue.prototype.token = "55f41f00fdc5f5ab62df854a595c6de7";
+Vue.prototype.userId = "30";
 Vue.prototype.userInfo = {
    /* cstnetId: "cclhyt@163.com",*/
     cstnetId: "371246735@qq.com",

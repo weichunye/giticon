@@ -55,7 +55,7 @@
                 <el-input v-model="projectForm.name" autocomplete="off"></el-input>
                 <p style="font-size: 12px; color: #f81d22">仓库名称只允许字母、数字或者下划线(_)、中划线(-)、点(.)</p>
             </el-form-item>
-            <el-form-item prop="projectId" label="选择项目" :label-width="formLabelWidth">
+            <el-form-item label="选择项目" :label-width="formLabelWidth">
                 <el-select size="medium" v-model="projectForm.projectId" placeholder="请选择">
                     <el-option
                             v-for="item in projectList"

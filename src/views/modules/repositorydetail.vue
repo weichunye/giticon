@@ -222,8 +222,9 @@
     </el-dialog>
     <el-dialog title="新建合并请求" :visible.sync="dialogCreatMerge" :close-on-click-modal=false>
       <el-row :gutter="10" class="marT-20">
-        <el-col :span="4">
-          <el-select size="medium" v-model="sourceBranch" placeholder="请选择" @change="changeBranch()">
+        <el-col :span="7">
+         <span> 源分支：</span>
+          <el-select  size="medium" v-model="sourceBranch" placeholder="请选择" @change="changeBranch()">
             <el-option
                     v-for="item in branchList"
                     :key="item.simpleName"
@@ -232,7 +233,9 @@
             </el-option>
           </el-select>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="7">
+
+          <span>   目标分支：</span>
           <el-select size="medium" v-model="distBranch" placeholder="请选择" @change="changeBranch()">
             <el-option
                     v-for="item in branchList"
@@ -243,7 +246,7 @@
           </el-select>
         </el-col>
         <el-col :span="4" v-if="ifCanMerge">
-          <p  style="margin-left: 10px; line-height:40px">可以合并</p>
+          <p  style="margin-left: 10px; line-height:40px;color: #12990b">可以合并</p>
         </el-col>
         <el-col :span="4" v-else>
           <p  style="margin-left: 10px;line-height:40px; color: #d31519"> 不可自动合并</p>
@@ -441,7 +444,7 @@ export default {
             desc: [ { required: true, message: '请填写简介',trigger: 'blur' } ],
             ownerType: [ { required: true, message: '请选择审核人',trigger: 'blur' } ],
           },
-          memberLisr:''
+          memberLisr:[]
         }
     },
     mounted(){
@@ -570,8 +573,9 @@ export default {
         params.append("targetBranch", _this.distBranch);
         _this.axios.post(_this.config.baseURL + '/app/pullReq/canMerge',params)
                 .then(function (response) {
-                  if(response.data.data=="ALREADY_MERGED"){
-                    console.log("ALREADY_MERGED")
+                  console.log("response.data.data  ",response.data.data )
+                  if(response.data.data=="MERGEABLE"){
+                    console.log("MERGEABLE  ")
                     console.log("可合并")
                     _this.ifCanMerge=true
 
@@ -592,8 +596,14 @@ export default {
         params.append("depotId", _this.depotId);
         this.axios.post(this.config.baseURL + '/app/depot/getDepotUserList',params)
                 .then(function (response) {
-                  console.log("=response.data",response.data)
-                  _this.memberLisr=response.data.pageList.records
+                  console.log("=response.data------------",response.data)
+                         for(var i=0; i< response.data.pageList.records.length; i++){
+                           var cur=response.data.pageList.records[i]
+                           if(cur.authType==1){
+                             _this.memberLisr.push(cur)
+                           }
+                         }
+              /*    _this.memberLisr=response.data.pageList.records*/
 
                 })
       },
@@ -605,7 +615,7 @@ export default {
             _this.axios.defaults.headers.common['token'] = _this.token
             this.axios.post(this.config.baseURL + '/app/pullReq/createPullRequest',{
               "auditUserId": _this.mergeForm.ownerType,
-              "depotId": 68,
+              "depotId":  _this.depotId,
               "description": _this.mergeForm.desc,
               "distBranch": _this.distBranch,
               "sourceBranch": _this.sourceBranch,

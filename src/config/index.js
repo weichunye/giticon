@@ -15,7 +15,7 @@ const modeUrlObj = {
     },
     // 测试环境
     'test': {
-        baseURL: ' http://39.100.253.62:80/csthub',
+        baseURL: '  http://www.cstos.cstcloud.cn/csthub',
         authBaseURL: ''
     }
 }

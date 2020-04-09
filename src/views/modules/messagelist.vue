@@ -43,7 +43,7 @@ export default {
             projectValue:'',
             messageData:[],
             page:1,
-            limit:10,
+            limit:1,
             total:0,
             projectName:''
         }
@@ -76,10 +76,19 @@ export default {
         getDataList(){
             var _this=this;
             _this.axios.defaults.headers.common['token'] = _this.token
-            this.axios.get(this.config.baseURL + '/app/depot/invitationWaitList')
+            this.axios.get(this.config.baseURL + '/app/depot/invitationWaitList',{params:{
+                    "page":_this.page,
+                    "limit":_this.limit,
+                    /* "depotId":_this.$route.query.depotId*/
+
+                }})
                 .then(function (response) {
                     _this.messageData=response.data.list
+                    console.log("_this.messageData.length",_this.messageData)
+                    _this.total= _this.messageData.length
                     _this.$refs.child.messageLength= _this.messageData.length
+
+
                 })
         },
         //同意邀请
