@@ -9,7 +9,7 @@
                 <button>搜索</button>
                 </router-link>
             </div>
-            <p class="loginout" @click="loginOut">【退出】</p>
+            <a  class="loginout" @click="loginOut"  href=" https://passport.escience.cn/logout?WebServerURL=http://www.cstos.cstcloud.cn">【退出】</a>
             <dl class="userinfo">
                 <dt>
                     <img src="../assets/photo.jpg"/>
@@ -394,7 +394,6 @@
                 var _this = this;
                 sessionStorage.clear()
                 localStorage.clear();
-                _this.$router.go(0);
             },
             //重置
             resetForm(formName,dialogEle) {

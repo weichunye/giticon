@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%; height: 100%">
-    <div v-if="!this.token" class="education_box" >
+    <div v-if="!userJsonStr" class="education_box" >
       <div class="education_login">
         <!--登录-->
         <span class="dltit">登 录</span>
@@ -14,7 +14,7 @@
       <div class="login-bg-left">
       </div>
     </div>
-    <div v-show="this.token" style="width: 100%; height: 100%">
+    <div v-show="userJsonStr" style="width: 100%; height: 100%">
     <div class="home">
       <h3>工作台</h3>
       <!--代码仓库-->
@@ -199,6 +199,7 @@
                 fragmentData:[],
                 projectData:[],
               isSetHttpClonePwd:false,
+              userJsonStr:false,
               clonePwdForm:{
                 pwdVal:'',
                 pwdValRe:''
@@ -213,10 +214,14 @@
 
         mounted(){
             var _this=this;
-          !this.token?$("#nav").hide():""
             _this.axios.defaults.headers.common['token'] = _this.token
             console.log("thie.token",_this.token)
           console.log("sessionStorage.getItem('isSetHttpClonePwd')",sessionStorage.getItem('isSetHttpClonePwd'))
+          if(sessionStorage.getItem('token')){
+            _this.userJsonStr=true
+
+          }
+          !_this.userJsonStr?$("#nav").hide():""
           if(sessionStorage.getItem('isSetHttpClonePwd')!=1){
             this.isSetHttpClonePwd= this.userInfo.isSetHttpClonePwd=="0"?true:false;
           }
@@ -301,7 +306,7 @@
                 this.$router.push({
                     name: 'snipperdetails',
                     query: {
-                        'id':row.id,
+                        'snippetsId':row.id,
                     }
                 })
             },

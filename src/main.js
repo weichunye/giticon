@@ -63,9 +63,11 @@ if(userEntity){
     Vue.prototype.token = userEntity.token;
     Vue.prototype.userInfo = userEntity.userInfo;
     Vue.prototype.userId = userEntity.userId;
+    sessionStorage.setItem('token', userEntity.token);
 }
-Vue.prototype.token = "55f41f00fdc5f5ab62df854a595c6de7";
-Vue.prototype.userId = "30";
+sessionStorage.setItem('token', '67f1d51b6eec24b3895d58e8c873a018');
+Vue.prototype.token = "67f1d51b6eec24b3895d58e8c873a018";
+Vue.prototype.userId = "18";
 Vue.prototype.userInfo = {
    /* cstnetId: "cclhyt@163.com",*/
     cstnetId: "371246735@qq.com",
