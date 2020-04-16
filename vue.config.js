@@ -1,5 +1,5 @@
 /**
- * 配置参考: https://cli.vuejs.org/zh/config/
+ * 配置参考: https://cli.vuejs.org/zh/config/测试
  */
 const webpack = require('webpack')
 module.exports = {
