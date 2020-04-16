@@ -35,10 +35,10 @@
             <el-form-item label="项目简介" prop="desc" :label-width="formLabelWidth">
                 <el-input type="textarea" v-model="form.desc"></el-input>
             </el-form-item>
-            <el-form-item label="是否公开" :label-width="formLabelWidth">
+          <!--  <el-form-item label="是否公开" :label-width="formLabelWidth">
                 <el-radio v-model="form.radio" label="1">私有</el-radio>
                 <el-radio v-model="form.radio" label="2">公开</el-radio>
-            </el-form-item>
+            </el-form-item>-->
             <el-form-item>
                 <div style="display: block; text-align: center">
                     <el-button @click="resetForm('form','dialogProjectForm')">取 消</el-button>

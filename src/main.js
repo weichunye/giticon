@@ -65,16 +65,16 @@ if(userEntity){
     Vue.prototype.userId = userEntity.userId;
     sessionStorage.setItem('token', userEntity.token);
 }
-sessionStorage.setItem('token', '67f1d51b6eec24b3895d58e8c873a018');
-Vue.prototype.token = "67f1d51b6eec24b3895d58e8c873a018";
+/*sessionStorage.setItem('token', 'eca44a6a53e1cce7aac872254f305174');
+Vue.prototype.token = "eca44a6a53e1cce7aac872254f305174";
 Vue.prototype.userId = "18";
 Vue.prototype.userInfo = {
-   /* cstnetId: "cclhyt@163.com",*/
+   /!* cstnetId: "cclhyt@163.com",*!/
     cstnetId: "371246735@qq.com",
     trueName: "魏春野666",
     isSetHttpClonePwd:1,
 
-}
+}*/
 axios.interceptors.response.use(response => {
     if (response) {
         switch (response.data.code) {

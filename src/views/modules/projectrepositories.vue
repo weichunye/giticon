@@ -112,6 +112,12 @@
                             {{scope.row.lastUpdateTime}}
                         </template>
                     </el-table-column>
+                    <el-table-column  width="60"  prop="lastUpdateTime">
+                        <template slot-scope="scope">
+                            <!-- <span class="iconlock"></span>-->
+                            <el-button type="danger" @click="delDeport(scope.row)" size="mini">删除</el-button>
+                        </template>
+                    </el-table-column>
                <!--     <el-table-column width="120" prop="">
                         <template slot-scope="scope">
                             <span  style="float: left" class="iconlock"></span>
@@ -260,11 +266,32 @@
                     }
                 })
             },
+            //删除
+            delDeport(row){
+                console.log("row",row)
+                var _this=this;
+                _this.axios.defaults.headers.common['token'] = _this.token
+                var params = new URLSearchParams();
+                params.append("depotId",row.id);
+                this.axios.post(this.config.baseURL + '/app/depot/deleteDepot',params)
+                    .then(function (response) {
+                        var  msgType=response.data.code==0?'success':'warning'
+                        _this.$message({
+                            message: response.data.msg,
+                            type: msgType
+                        });
+                        if(_this.$route.query.projectId){
+                            _this.getDataList()
+                        }else{
+                            _this.getAllDeopr()
+                        }
+                    })
+            },
             //分页
             pageSizeChangeHandle(val) {
                 this.page = 1
                 this.limit = val
-                if(this.$route.query.id){
+                if(this.$route.query.projectId){
                     this.getDataList()
                 }else{
                     this.getAllDeopr()
@@ -273,7 +300,7 @@
             // 分页, 当前页
             pageCurrentChangeHandle(val) {
                 this.page = val
-                if(this.$route.query.id){
+                if(this.$route.query.projectId){
                     this.getDataList()
                 }else{
                     this.getAllDeopr()

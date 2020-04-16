@@ -99,12 +99,11 @@ export default {
                 .then(function (response) {
                     console.log(" this.messageData",  response.data)
                     var  msgType=response.data.code==0?'success':'warning'
-                    _this.getDataList()
                     _this.$message({
                         message: response.data.msg,
                         type: msgType
                     });
-
+                    _this.$router.go(0);
 
                 })
 
