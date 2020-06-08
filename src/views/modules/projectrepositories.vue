@@ -14,7 +14,7 @@
                             </el-col>
                             <el-col :span="8">
                                 <router-link :to="{path:'/member',query:{membertype:'project',projectId:this.$route.query.projectId}}">
-                                <el-button style="float: right" type="primary" plain>成员管理</el-button>
+                                <el-button v-if="this.$route.query.projectId" style="float: right" type="primary" plain>成员管理</el-button>
                                 </router-link>
                             </el-col>
                         </el-row>
@@ -34,7 +34,7 @@
             </el-row>
             <el-row style="margin-top: 20px">
                 <el-col :span="5">
-                    <el-input v-model="depotValue" size="medium" placeholder="输入仓库名称"></el-input>
+                    <el-input v-model="depotValue" size="medium" placeholder="输入仓库名称"  @keyup.enter.native="searchSubmit"></el-input>
                 </el-col>
                 <el-col :span="1"> &nbsp</el-col>
                 <el-col :span="4">
@@ -112,10 +112,10 @@
                             {{scope.row.lastUpdateTime}}
                         </template>
                     </el-table-column>
-                    <el-table-column  width="60"  prop="lastUpdateTime">
+                    <el-table-column  width="80"  prop="lastUpdateTime">
                         <template slot-scope="scope">
                             <!-- <span class="iconlock"></span>-->
-                            <el-button type="danger" @click="delDeport(scope.row)" size="mini">删除</el-button>
+                            <el-button v-if="scope.row.ownerId==userId" type="danger" @click="delDeport(scope.row)" size="mini">删除</el-button>
                         </template>
                     </el-table-column>
                <!--     <el-table-column width="120" prop="">
@@ -158,6 +158,7 @@
                 projectOptions: [ ],
                 projectData: [],
                 limitsType:'',
+                userId:this.userId,
                 limitsTypeOption:[
                     { 'name':'  私有  ',
                         id:1
@@ -169,6 +170,10 @@
             }
         },
         mounted() {
+            var _this=this
+            console.log("00000000000000000000userId",this.userId)
+            _this.userId==this.userId
+            console.log("111111111111111",  _this.userId)
           this.projectName=this.$route.query.projectName
             this.getProjectList()
             console.log("this.$route.query.projectId",this.$route.query.projectId)
@@ -270,22 +275,29 @@
             delDeport(row){
                 console.log("row",row)
                 var _this=this;
-                _this.axios.defaults.headers.common['token'] = _this.token
-                var params = new URLSearchParams();
-                params.append("depotId",row.id);
-                this.axios.post(this.config.baseURL + '/app/depot/deleteDepot',params)
-                    .then(function (response) {
-                        var  msgType=response.data.code==0?'success':'warning'
-                        _this.$message({
-                            message: response.data.msg,
-                            type: msgType
-                        });
-                        if(_this.$route.query.projectId){
-                            _this.getDataList()
-                        }else{
-                            _this.getAllDeopr()
-                        }
-                    })
+                _this.$confirm('确定删除该仓库?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    _this.axios.defaults.headers.common['token'] = _this.token
+                    var params = new URLSearchParams();
+                    params.append("depotId",row.id);
+                    this.axios.post(this.config.baseURL + '/app/depot/deleteDepot',params)
+                        .then(function (response) {
+                            var  msgType=response.data.code==0?'success':'warning'
+                            _this.$message({
+                                message: response.data.msg,
+                                type: msgType
+                            });
+                            if(_this.$route.query.projectId){
+                                _this.getDataList()
+                            }else{
+                                _this.getAllDeopr()
+                            }
+                        })
+                })
+
             },
             //分页
             pageSizeChangeHandle(val) {

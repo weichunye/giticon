@@ -146,19 +146,27 @@
             },
             //删除
             delSnippet(row){
-                console.log("row",row)
                 var _this=this;
+              this.$confirm('确定删除该片段代码?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
                 this.axios.delete(this.config.baseURL + '/app/snippet/delete',{params:{
                     'snippetId':row.id,
-                }})
-                    .then(function (response) {
-                        var  msgType=response.data.code==0?'success':'warning'
-                        _this.$message({
+                  }})
+                        .then(function (response) {
+                          var  msgType=response.data.code==0?'success':'warning'
+                          _this.$message({
                             message: response.data.msg,
                             type: msgType
-                        });
-                        _this.getDataList()
-                    })
+                          });
+                          _this.getDataList()
+                        })
+              })
+
+
+
             },
 
             //分页

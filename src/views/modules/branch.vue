@@ -114,19 +114,27 @@ export default {
         //删除分支
         delBranch(branchName){
             var _this = this;
-            _this.axios.defaults.headers.common['token'] = _this.token
-            var params = new URLSearchParams();
-            params.append("depotId",_this.depotId);
-            params.append("branch_name",branchName);
-            _this.axios.post(this.config.baseURL + '/app/user/*/project/*/git/branches/delete', params)
-                .then(function (response) {
-                    var  msgType=response.data.code==0?'success':'warning'
-                    _this.$message({
-                        message: response.data.msg,
-                        type: msgType
-                    });
-                    _this.getBranchList()
-                })
+            _this.$confirm('确定删除该分支?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                _this.axios.defaults.headers.common['token'] = _this.token
+                var params = new URLSearchParams();
+                params.append("depotId",_this.depotId);
+                params.append("branch_name",branchName);
+                _this.axios.post(this.config.baseURL + '/app/user/*/project/*/git/branches/delete', params)
+                    .then(function (response) {
+                        var  msgType=response.data.code==0?'success':'warning'
+                        _this.$message({
+                            message: response.data.msg,
+                            type: msgType
+                        });
+                        _this.getBranchList()
+                    })
+
+            })
+
         },
         //行点击事件
         goToPositores (row, event, column) {

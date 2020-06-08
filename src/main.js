@@ -11,12 +11,9 @@ import Vuex from  'vuex'
 import store from  './vuex/store'
 import codemirror from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
-import {Passport} from  './utils/checkLogin'
 import { VueShowdown } from 'vue-showdown' // remember to import the esm build of vue-showdown, i.e. vue-showdown.esm.js
 import hljs from "highlight.js"
 import 'highlight.js/styles/default.css';
-
-
 Vue.component('VueShowdown', VueShowdown)
 Vue.config.productionTip = false
 Vue.prototype.axios = axios;
@@ -30,51 +27,29 @@ Vue.directive('highlight',function (el) {
         hljs.highlightBlock(block)
     })
 })
-
-/*Vue.prototype.$http = http*/
-/*
-Vue.prototype.userStatus=1;//默认用户为普通角色，1为供应商
-Vue.prototype.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE1NzcyNTYwNDUsInVzZXJJZCI6OSwiaWF0IjoxNTc2NjUxMjQ1LCJlbWFpbCI6IndjeUBxcS5jb20iLCJ1c2VybmFtZSI6Iumtj-aYpemHjiJ9.sd7dHCnt-gsXUv-rytXClnKWnDXz3_lWRVD5nMF0xL7h0ksjPCB_UmIjVt3VaHuA1j-I7KfTITexysmkq1bjmw'
-Vue.prototype.userInfo = {
-    id: 2,
-    trueName: '测试账号',
-    mobile: 13333333333,
-    cstnetId: '371246735@qq.com',
-
-}*/
-var option={
-      umtUrl:'http://passport.escience.cn', //umt的地址，必填
-      viewPort:$("#testDiv"),						//显示message的地方，可不填
-       message:'haha,runing...',					//提示信息的内容，可不填
-       loginclass:'miaomiao'
+var userJsonStr;
+/*userJsonStr={"flag":"1","error":"","userId":"18","token":"919fd84243ab2b07b1b8358055602c57","refreshToken":"3183cc9cefd420cc2bd82363ccae3895","userInfo":{"trueName":"李健","cstnetId":"371246735@qq.com","isSetHttpClonePwd":"1"}}
+userJsonStr=JSON.stringify(userJsonStr);*/
+if(localStorage.getItem('sessionData')&&localStorage.getItem('sessionData')!='null'){
+    console.log("localStorage.getItem('sessionData')++++++++",localStorage.getItem('sessionData'))
+    userJsonStr=localStorage.getItem('sessionData')
 }
-var newOption={
-    target:'none',   //无作用
-    appname:'dct', //应用名称
-     theme:'ddl'	   //如果在umt里面有定制版，
-    						}
-var  passport= new Passport(option)
-console.log("passport",passport)
-var newPassport= passport.checkAndLogin("http://www.cstos.cstcloud.cn/csthub/web/auth/callback",newOption)
-console.log("passport00",newPassport)
-var userJsonStr = sessionStorage.getItem('sessionData');
-var userEntity = JSON.parse(userJsonStr);
+if(sessionStorage.getItem('sessionData')){
+    userJsonStr = sessionStorage.getItem('sessionData');
+    console.log("sessionStorage.getItem('sessionData')@@@@@@@@",sessionStorage.getItem('sessionData'))
+    localStorage.setItem('sessionData',userJsonStr);
+    console.log("userJsonStr本地缓存没有",userJsonStr)
+}
+var userEntity =userJsonStr?JSON.parse(userJsonStr):null;
 if(userEntity){
     Vue.prototype.token = userEntity.token;
     Vue.prototype.userInfo = userEntity.userInfo;
     Vue.prototype.userId = userEntity.userId;
-    sessionStorage.setItem('token', userEntity.token);
+  /*  window.SITE_CONFIG['token'] = userEntity.token;*/
 }
-/*sessionStorage.setItem('token', 'eca44a6a53e1cce7aac872254f305174');
-Vue.prototype.token = "eca44a6a53e1cce7aac872254f305174";
-Vue.prototype.userId = "18";
-Vue.prototype.userInfo = {
-   /!* cstnetId: "cclhyt@163.com",*!/
-    cstnetId: "371246735@qq.com",
-    trueName: "魏春野666",
-    isSetHttpClonePwd:1,
 
-}*/
+console.log("userEntity++++++++++++++++",userEntity)
+console.log("Vue.prototype.userId111111111111111111",Vue.prototype.userId)
 axios.interceptors.response.use(response => {
     if (response) {
         switch (response.data.code) {

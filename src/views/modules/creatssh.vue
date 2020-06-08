@@ -108,20 +108,28 @@
           },
           sshDel(id){
             var _this = this;
-            var params = new URLSearchParams();
-            params.append("keyId", id);
-            _this.axios.defaults.headers.common['token'] = _this.token
-                _this.axios.post(this.config.baseURL +   "/app/key/delSshKey", params)
-                        .then(function (response) {
-                          if(response.data.code==0){
-                            _this.getSshList()
-                          }
-                          _this.$message({
-                            message: response.data.msg,
-                            type: response.data.code == 0 ? "success" : "warning"
-                          });
+            _this.$confirm('确定删除该公钥?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              var params = new URLSearchParams();
+              params.append("keyId", id);
+              _this.axios.defaults.headers.common['token'] = _this.token
+              _this.axios.post(this.config.baseURL +   "/app/key/delSshKey", params)
+                      .then(function (response) {
+                        if(response.data.code==0){
+                          _this.getSshList()
+                        }
+                        _this.$message({
+                          message: response.data.msg,
+                          type: response.data.code == 0 ? "success" : "warning"
+                        });
 
-                        })
+                      })
+            })
+
+
           },
           newSsh(formName){
             var _this = this;

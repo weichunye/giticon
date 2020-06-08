@@ -9,7 +9,7 @@
                 <button>搜索</button>
                 </router-link>
             </div>
-            <a  class="loginout" @click="loginOut"  href=" https://passport.escience.cn/logout?WebServerURL=http://www.cstos.cstcloud.cn">【退出】</a>
+            <a  class="loginout" @click="loginOut"  href="https://passport.escience.cn/logout?WebServerURL=http://www.cstos.cstcloud.cn">【退出】</a>
             <dl class="userinfo">
                 <dt>
                     <img src="../assets/photo.jpg"/>
@@ -34,6 +34,7 @@
             </el-form-item>
             <el-form-item label="项目简介" prop="desc" :label-width="formLabelWidth">
                 <el-input type="textarea" v-model="form.desc"></el-input>
+                <p  style="margin-left: 5px; font-size: 12px; color: #999"> 限2000字</p>
             </el-form-item>
           <!--  <el-form-item label="是否公开" :label-width="formLabelWidth">
                 <el-radio v-model="form.radio" label="1">私有</el-radio>
@@ -67,6 +68,7 @@
             </el-form-item>
             <el-form-item prop="desc" label="简介" :label-width="formLabelWidth">
                 <el-input type="textarea" v-model="projectForm.desc"></el-input>
+                <p  style="margin-left: 5px; font-size: 12px; color: #999"> 限2000字</p>
             </el-form-item>
             <el-form-item prop="ifPublic"  label="是否公开" :label-width="formLabelWidth">
                 <el-radio v-model="projectForm.ifPublic" label="1">私有</el-radio>
@@ -270,6 +272,13 @@
                     "name": _this.form.name,
                     "ownerId": this.userId,
                 };
+                if(_this.form.desc.length>2000){
+                    _this.$message({
+                        message: "简介字数限制为2000字，请重新输入",
+                        type: "warning"
+                    });
+                    return
+                }
                 this.$refs[formName].validate((valid) => {
                     if(valid){
                         _this.axios.post(this.config.baseURL + '/app/project', params)
@@ -300,6 +309,13 @@
                     "projectId":_this.projectForm.projectId,
                     "ownerId": this.userId ,
                 };
+                if(_this.projectForm.desc.length>2000){
+                    _this.$message({
+                        message: "简介字数限制为2000字，请重新输入",
+                        type: "warning"
+                    });
+                    return
+                }
                 this.$refs[formName].validate((valid) => {
                     if(valid){
                         _this.axios.post(this.config.baseURL + '/app/depot/depot', params)

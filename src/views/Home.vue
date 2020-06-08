@@ -190,6 +190,8 @@
 
 <script>
     // @ is an alias to /src
+    import $ from "jquery";
+
     export default {
         name: 'home',
         data () {
@@ -215,13 +217,31 @@
         mounted(){
             var _this=this;
             _this.axios.defaults.headers.common['token'] = _this.token
-            console.log("thie.token",_this.token)
+          console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$userId",this.userId)
           console.log("sessionStorage.getItem('isSetHttpClonePwd')",sessionStorage.getItem('isSetHttpClonePwd'))
-          if(sessionStorage.getItem('token')){
-            _this.userJsonStr=true
+        /*  $.getScript("http://passport.escience.cn/js/isLogin.do", function(){
+            if(!data.result){
+              localStorage.clear()
+              sessionStorage.clear()
+            }
+          })*/
 
+          if(this.userId){
+            _this.userJsonStr=true
+          }else{
+            _this.userJsonStr=false
+            $("#nav").hide()
+            localStorage.clear()
+            sessionStorage.clear()
           }
-          !_this.userJsonStr?$("#nav").hide():""
+          $.getScript("http://passport.escience.cn/js/isLogin.do", function(){
+            if(!data.result){
+              _this.userJsonStr=false
+              $("#nav").hide()
+              localStorage.clear()
+              sessionStorage.clear()
+            }})
+          console.log("this.userId",_this.userId)
           if(sessionStorage.getItem('isSetHttpClonePwd')!=1){
             this.isSetHttpClonePwd= this.userInfo.isSetHttpClonePwd=="0"?true:false;
           }

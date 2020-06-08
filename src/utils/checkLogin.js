@@ -32,6 +32,7 @@ export function Passport(option){
         }else{
             url = this.umtUrl+"/login";
         };
+        console.log("url----------",url)
         url = url+"?WebServerURL="+escape(returnUrl);
 
         if (params){
@@ -66,12 +67,17 @@ export function Passport(option){
      * */
     this._getCookie = function (name) {
         var arg = name + "=";
+        console.log(" arg====", arg)
         var alen = arg.length;
         var clen = document.cookie.length;
+        console.log(" document.cookie.length;", document.cookie)
+        console.log(" alen====", alen)
         var i = 0;
         while (i < clen) {
             var j = i + alen;
+            console.log("(document.cookie.substring(i, j)",document.cookie.substring(i, j))
             if (document.cookie.substring(i, j) == arg) {
+                console.log("最后",this._getCookieVal(j))
                 return this._getCookieVal(j);
             }
             i = document.cookie.indexOf(" ", i) + 1;
@@ -145,6 +151,7 @@ export function Passport(option){
     this.checkAndLogin=function(returnUrl, params){
         var self=this;
         self.checkLogin(function(flag){
+            console.log("self._buildLoginUrl(returnUrl,params)",self._buildLoginUrl(returnUrl,params))
             if(flag){
                 if(self.option.viewPort!=null&&self.option.viewPort!=""){
                     self._showPrompt();

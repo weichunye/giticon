@@ -6,7 +6,7 @@
       <el-col :span="14">
     <el-form :inline="true"  class="demo-form-inline">
       <el-form-item label="">
-        <el-input v-model="searchName"  size="medium" placeholder="输入搜索名称"></el-input>
+        <el-input v-model="searchName"  size="medium" placeholder="输入搜索名称"  @keyup.enter.native="getDataList"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button size="medium" @click="getDataList">查询</el-button>

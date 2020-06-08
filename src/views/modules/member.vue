@@ -99,7 +99,7 @@ export default {
             params.append("page", _this.page);
             params.append("limit", _this.limit);
           params.append("userName", _this.memberValue);
-            params.append("projectId",  _this.$route.query.projectId);
+            params.append("projectId",  _this.$route.query.projectId?_this.$route.query.projectId:"");
             this.axios.post(this.config.baseURL + '/app/getProjectUserList',params)
                 .then(function (response) {
                   console.log("response",response.data)
@@ -129,6 +129,7 @@ export default {
                 .then(function (response) {
                     console.log("=response.data",response.data)
                     _this.projectData=response.data.pageList.records
+                  _this.total=response.data.pageList.total
 
                 })
         },
