@@ -28,7 +28,7 @@ Vue.directive('highlight',function (el) {
     })
 })
 var userJsonStr;
-/*userJsonStr={"flag":"1","error":"","userId":"18","token":"919fd84243ab2b07b1b8358055602c57","refreshToken":"3183cc9cefd420cc2bd82363ccae3895","userInfo":{"trueName":"李健","cstnetId":"371246735@qq.com","isSetHttpClonePwd":"1"}}
+/*userJsonStr={"flag":"1","error":"","userId":"18","token":"23d2d0ccd0b1daaeb33f839cdbe9dc92","refreshToken":"3183cc9cefd420cc2bd82363ccae3895","userInfo":{"trueName":"李健","cstnetId":"371246735@qq.com","isSetHttpClonePwd":"1"}}
 userJsonStr=JSON.stringify(userJsonStr);*/
 if(localStorage.getItem('sessionData')&&localStorage.getItem('sessionData')!='null'){
     console.log("localStorage.getItem('sessionData')++++++++",localStorage.getItem('sessionData'))
