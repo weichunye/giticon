@@ -422,6 +422,7 @@
     }
 </script>
 <style scoped>
+    *{border: none}
     ul {
         list-style-type: none;
         padding: 0;
@@ -470,6 +471,12 @@
         background: #fff;
         border: 1px solid #dedede;
         border-radius:20px 0 0 20px;
+
+    }
+    .header .search-box input:focus{
+        background: #FFFFFF;
+        border: 1px solid #dedede;
+        outline:1px solid #fff;
     }
     .header .search-box button{
         float: left;

@@ -28,17 +28,14 @@ Vue.directive('highlight',function (el) {
     })
 })
 var userJsonStr;
-/*userJsonStr={"flag":"1","error":"","userId":"18","token":"23d2d0ccd0b1daaeb33f839cdbe9dc92","refreshToken":"3183cc9cefd420cc2bd82363ccae3895","userInfo":{"trueName":"李健","cstnetId":"371246735@qq.com","isSetHttpClonePwd":"1"}}
-userJsonStr=JSON.stringify(userJsonStr);*/
+userJsonStr={"flag":"1","error":"","userId":"18","token":"770964b7b7ade5caf1629827ffe97fd2","refreshToken":"06d9bc7dac86172236eb007467618e21","userInfo":{"trueName":"李健","cstnetId":"371246735@qq.com","isSetHttpClonePwd":"1"}}
+userJsonStr=JSON.stringify(userJsonStr);
 if(localStorage.getItem('sessionData')&&localStorage.getItem('sessionData')!='null'){
-    console.log("localStorage.getItem('sessionData')++++++++",localStorage.getItem('sessionData'))
     userJsonStr=localStorage.getItem('sessionData')
 }
 if(sessionStorage.getItem('sessionData')){
     userJsonStr = sessionStorage.getItem('sessionData');
-    console.log("sessionStorage.getItem('sessionData')@@@@@@@@",sessionStorage.getItem('sessionData'))
     localStorage.setItem('sessionData',userJsonStr);
-    console.log("userJsonStr本地缓存没有",userJsonStr)
 }
 var userEntity =userJsonStr?JSON.parse(userJsonStr):null;
 if(userEntity){
@@ -49,7 +46,6 @@ if(userEntity){
 }
 
 console.log("userEntity++++++++++++++++",userEntity)
-console.log("Vue.prototype.userId111111111111111111",Vue.prototype.userId)
 axios.interceptors.response.use(response => {
     if (response) {
         switch (response.data.code) {

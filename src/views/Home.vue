@@ -247,7 +247,7 @@
           if(_this.token){
             this.axios.post(this.config.baseURL + '/app/index/myWorkbench ')
                     .then(function (response) {
-                      console.log(" this.projectData",response)
+                      console.log(" _this.token",_this.token)
                       _this.getDataList=response.data.workbench
                       if(response.data.code!=0){
                         _this.$alert('令牌过期,请重新登录', '', {

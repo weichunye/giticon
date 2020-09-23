@@ -52,6 +52,10 @@
                     <i class="el-icon-edit-outline"></i>
                     <span slot="title">合并请求</span>
                 </el-menu-item>
+                <el-menu-item index="/resetPassWord"  @click="resetPassWord()">
+                    <i class="el-icon-edit"></i>
+                    <span slot="title">重置HTTP克隆独立密码</span>
+                </el-menu-item>
                  <!--   <el-menu-item index="8">
                         <i class="el-icon-setting"></i>
                         <span slot="title">源码</span>
@@ -59,6 +63,20 @@
             </el-menu>
 
         </div>
+        <el-dialog title="重置HTTP克隆独立密码"  :visible.sync="resetPassWordDialog" :show-close="false"  :close-on-click-modal="false">
+            <el-form :model="clonePwdForm"  :rules="rules4" ref="clonePwdForm">
+                <el-form-item label="设置密码" prop="pwdVal" >
+                    <el-input type="password" v-model="clonePwdForm.pwdVal" ></el-input>
+                </el-form-item>
+                <el-form-item   label="确认密码" prop="pwdValRe" >
+                    <el-input type="password" v-model="clonePwdForm.pwdValRe" ></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="checkPwd('clonePwdForm') ">确 定</el-button>
+                <el-button @click="resetFormPassWordDialog('clonePwdForm')">取 消</el-button>
+            </div>
+        </el-dialog>
 
     </div>
 </template>
@@ -81,7 +99,16 @@
                 dialogCode: false,//仓库
                 formLabelWidth: '130px',
                 messageLength:'',
-                projectList:[]
+                projectList:[],
+                resetPassWordDialog:false,
+                clonePwdForm:{
+                    pwdVal:'',
+                    pwdValRe:''
+                },
+                rules4: {
+                    pwdVal: [{ required: true,message: '请填写密码', trigger: 'blur'}],
+                    pwdValRe: [{ required: true,message: '请重复填写密码', trigger: 'blur'}],
+                },
             }
         },
         mounted() {
@@ -100,7 +127,44 @@
 
         },
         methods: {
+            resetPassWord(){
+                this.resetPassWordDialog=true
 
+            },
+            resetFormPassWordDialog(formName) {
+                this.$refs[formName].resetFields();
+                this.resetPassWordDialog=false
+            },
+            checkPwd(formName) {
+                var _this = this;
+                _this.axios.defaults.headers.common['token'] = _this.token
+                var params = new URLSearchParams();
+                params.append("httpClonePwd", _this.clonePwdForm.pwdVal);
+                this.$refs[formName].validate((valid) => {
+                    if(valid){
+                        if(_this.clonePwdForm.pwdVal!=_this.clonePwdForm.pwdValRe){
+                            _this.$message({
+                                message: "两次密码需保持一致",
+                                type: "warning"
+                            });
+                            return
+                        }
+                        _this.axios.post(this.config.baseURL + '/app/key/setHttpClonePwd', params)
+                            .then(function (response) {
+                                if(response.data.code==0){
+                                    sessionStorage.setItem("isSetHttpClonePwd",1)
+                                    _this.isSetHttpClonePwd=false
+                                    _this.$message({
+                                        message:"重置HTTP克隆独立密码成功",
+                                        type: response.data.code == 0 ? "success" : "warning"
+                                    });
+                                    _this.resetPassWordDialog=false
+                                    _this.$refs[formName].resetFields();
+                                }
+                            })
+                    }
+                });
+            },
             goDetails(ele){
                 var _this=this
                 var name=""
